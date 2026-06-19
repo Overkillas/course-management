@@ -61,8 +61,9 @@ próprios).
 course-management/
 ├── backend/                 # API REST (Quarkus)
 │   ├── docs/                # documentação de decisões do backend
-│   │   ├── db_diagram.md            # modelagem do banco de dados
-│   │   └── planejamento_backend.md  # planejamento, prioridades e decisões
+│   │   ├── db_diagram.md                # modelagem do banco de dados
+│   │   ├── decisoes_arquiteturais.md    # arquitetura da API (camadas, pacotes)
+│   │   └── planejamento_backend.md      # planejamento, prioridades e decisões
 │   └── src/
 ├── frontend/                # aplicação web (Angular), a ser adicionado
 └── README.md                # este arquivo
@@ -80,6 +81,8 @@ Documentos de decisão técnica já disponíveis:
 
 - [Modelagem do banco de dados](backend/docs/db_diagram.md): entidades, relações,
   decisões de integridade e índices.
+- [Decisões arquiteturais da API](backend/docs/decisoes_arquiteturais.md):
+  organização por domínio, camadas, DTOs, mapeamento e tratamento de erros.
 - [Planejamento do backend](backend/docs/planejamento_backend.md): princípios,
   stack, escopo, abordagem de autenticação, prioridades e ordem de implementação.
 
