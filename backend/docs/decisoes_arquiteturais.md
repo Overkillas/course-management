@@ -284,6 +284,36 @@ existe, não reescrever. Esse faseamento segue a priorização explícita do pro
 em que funcionalidades secundárias podem ficar simplificadas em favor da solidez do
 núcleo.
 
+### 8.2. O módulo `enrollment` e o desenho dos endpoints
+
+Modelei matrícula e listagem como uma **subcoleção do curso**, e não como um recurso
+de topo `/enrollments` nem como endpoints do lado do aluno:
+
+- `GET /courses/{id}/students`: lista os alunos matriculados no curso.
+- `POST /courses/{id}/students`: matricula um aluno (corpo: `{ studentId }`).
+
+**Por que a partir do curso.** O desafio é admin-only: "matricular alunos em cursos" e
+"listar alunos por curso" são ambas ações do administrador, não do aluno. Não existe um
+aluno-agente neste escopo que justifique um path do lado do aluno, já que a automatrícula
+não é pedida. A própria gramática dos dois requisitos aponta para o curso: "em cursos"
+trata o curso como container de destino, e "por curso" é agrupamento por curso. Os dois
+descrevem a relação a partir do curso; nenhum a descreve a partir do aluno.
+
+**Escrita com um lado canônico.** A leitura de uma relação pode ser bidirecional sem
+custo (são apenas views), mas a escrita não deve existir nos dois lados, ou haveria dois
+endpoints mutando o mesmo vínculo. Por isso a matrícula tem um único dono, o curso. Expor
+a mesma operação também em `/students/{id}/courses` seria duplicar a mutação.
+
+**O lado do aluno fica fora deste escopo.** Um `GET /students/{id}/courses` (o aluno
+vendo os próprios cursos) não é pedido pelo desafio e só ganha um agente real na Etapa 3
+(aluno autenticado, com autorização por posse).
+
+**O nesting na URL não acopla o domínio.** O path ser `/courses/{id}/students` é uma
+decisão de superfície HTTP. A lógica e a regra central (um aluno não se matricula duas
+vezes no mesmo curso) continuam no módulo `enrollment`; a resource que serve esse path
+vive em `enrollment`, apenas com o `@Path` course-nested. URL e módulo de domínio são
+camadas independentes.
+
 ---
 
 ## 9. Visão consolidada da estrutura
