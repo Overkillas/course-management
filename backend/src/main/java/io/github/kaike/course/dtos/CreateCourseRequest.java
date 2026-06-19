@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Size;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 /**
- * Dados de entrada para cadastrar um curso. As constraints sao a primeira linha de defesa
- * (validacao na aplicacao); o schema reforca as mesmas regras no banco (ver db_diagram 3.4).
+ * Dados de entrada para cadastrar um curso. As constraints são a primeira linha de defesa
+ * (validação na aplicação); o schema reforça as mesmas regras no banco (ver db_diagram 3.4).
  */
 public record CreateCourseRequest(
 

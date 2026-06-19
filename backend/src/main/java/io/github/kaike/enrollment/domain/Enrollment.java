@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
- * Matricula: juncao livre que liga aluno e curso. A regra central (um aluno nao se
- * matricula duas vezes no mesmo curso) e garantida pelo UNIQUE no schema; o mapeamento
+ * Matrícula: junção livre que liga aluno e curso. A regra central (um aluno não se
+ * matricula duas vezes no mesmo curso) é garantida pelo UNIQUE no schema; o mapeamento
  * abaixo apenas a documenta. Ver db_diagram.md 3.5.
  */
 @Entity

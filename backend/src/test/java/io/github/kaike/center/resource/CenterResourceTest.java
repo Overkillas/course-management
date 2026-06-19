@@ -8,9 +8,9 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 /**
- * Testa o endpoint de leitura de centros contra a aplicacao de verdade (a anotacao
- * @QuarkusTest sobe o app + um MySQL efemero com as migrations aplicadas, entao os 5
- * centros semeados na V2 existem). Estabelece o padrao @QuarkusTest + RestAssured.
+ * Testa o endpoint de leitura de centros contra a aplicação de verdade (a anotação
+ * @QuarkusTest sobe o app + um MySQL efêmero com as migrations aplicadas, então os 5
+ * centros semeados na V2 existem). Estabelece o padrão @QuarkusTest + RestAssured.
  */
 @QuarkusTest
 class CenterResourceTest {

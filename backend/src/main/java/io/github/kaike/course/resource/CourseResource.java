@@ -20,13 +20,13 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 /**
- * Exposicao HTTP do curso: cadastrar, listar e excluir. A validacao de entrada e disparada
+ * Exposição HTTP do curso: cadastrar, listar e excluir. A validação de entrada é disparada
  * por @Valid; falhas viram 400 formatado pelo handler global.
  */
 @Path("/courses")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Tag(name = "Cursos", description = "Cadastro, listagem e exclusao de cursos")
+@Tag(name = "Cursos", description = "Cadastro, listagem e exclusão de cursos")
 public class CourseResource {
 
     private final CourseService service;

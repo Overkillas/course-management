@@ -6,8 +6,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 /**
- * Conversao manual entre {@link Center} e seus DTOs (decisoes 5). Centraliza a traducao,
- * mantendo service e resource livres desse detalhe -- inclusive a de colecoes (toResponseList).
+ * Conversão manual entre {@link Center} e seus DTOs (decisões 5). Centraliza a tradução,
+ * mantendo service e resource livres desse detalhe -- inclusive a de coleções (toResponseList).
  */
 @ApplicationScoped
 public class CenterMapper {

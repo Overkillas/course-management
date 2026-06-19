@@ -12,12 +12,12 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 /**
- * Exposicao HTTP do centro. So leitura: lista os centros para o front consumir.
- * Ver decisoes 8.1.
+ * Exposição HTTP do centro. Só leitura: lista os centros para o front consumir.
+ * Ver decisões 8.1.
  */
 @Path("/centers")
 @Produces(MediaType.APPLICATION_JSON)
-@Tag(name = "Centros", description = "Dados de referencia dos centros academicos")
+@Tag(name = "Centros", description = "Dados de referência dos centros acadêmicos")
 public class CenterResource {
 
     private final CenterService service;

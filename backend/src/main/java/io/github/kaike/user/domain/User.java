@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
- * Usuario do sistema (administrador ou aluno). Base da autenticacao e do controle de
- * acesso por papel. O hash da senha nunca expoe a senha em texto puro.
+ * Usuário do sistema (administrador ou aluno). Base da autenticação e do controle de
+ * acesso por papel. O hash da senha nunca expõe a senha em texto puro.
  */
 @Entity
 @Table(name = "users")

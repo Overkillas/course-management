@@ -8,8 +8,8 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 /**
- * Regra de negocio do centro. No escopo atual ha apenas leitura (centro e dado de
- * referencia, sem CRUD -- ver decisoes 8.1).
+ * Regra de negócio do centro. No escopo atual há apenas leitura (centro é dado de
+ * referência, sem CRUD -- ver decisões 8.1).
  */
 @ApplicationScoped
 public class CenterService {

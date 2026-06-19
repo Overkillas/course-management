@@ -6,14 +6,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 /**
- * Acesso a dados de {@link Course}. Padrao Repository (decisoes 2.2). PK Integer.
+ * Acesso a dados de {@link Course}. Padrão Repository (decisões 2.2). PK Integer.
  */
 @ApplicationScoped
 public class CourseRepository implements PanacheRepositoryBase<Course, Integer> {
 
     /**
-     * Lista os cursos com o centro ja materializado (JOIN FETCH), em vez de deixar a
-     * associacao lazy disparar uma consulta por curso (problema N+1). Ver decisoes 2.3.
+     * Lista os cursos com o centro já materializado (JOIN FETCH), em vez de deixar a
+     * associação lazy disparar uma consulta por curso (problema N+1). Ver decisões 2.3.
      */
     public List<Course> listAllWithCenter() {
         return find("SELECT c FROM Course c JOIN FETCH c.center").list();

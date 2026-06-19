@@ -9,9 +9,9 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 /**
- * Testa o CRD de curso contra a aplicacao real (@QuarkusTest sobe app + MySQL efemero com
- * as migrations e os 5 centros semeados). Como os endpoints rodam em transacao propria, os
- * testes que criam dados removem o que criaram, para nao interferir nos demais.
+ * Testa o CRD de curso contra a aplicação real (@QuarkusTest sobe app + MySQL efêmero com
+ * as migrations e os 5 centros semeados). Como os endpoints rodam em transação própria, os
+ * testes que criam dados removem o que criaram, para não interferir nos demais.
  */
 @QuarkusTest
 class CourseResourceTest {
@@ -33,7 +33,7 @@ class CourseResourceTest {
                 .body("center.code", is("CCT"))
                 .extract().path("id");
 
-        // limpa o registro criado para nao poluir os demais testes
+        // limpa o registro criado para não poluir os demais testes
         given().when().delete("/courses/" + id).then().statusCode(204);
     }
 

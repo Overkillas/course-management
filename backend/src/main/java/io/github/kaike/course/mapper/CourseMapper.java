@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 /**
- * Conversao manual entre {@link Course} e seus DTOs (decisoes 5). Reaproveita o
+ * Conversão manual entre {@link Course} e seus DTOs (decisões 5). Reaproveita o
  * {@link CenterMapper} para o centro aninhado na resposta, mantendo o service livre de
  * saber a forma do CourseResponse.
  */
@@ -24,7 +24,7 @@ public class CourseMapper {
         this.centerMapper = centerMapper;
     }
 
-    /** O centro ja resolvido (e validado) e injetado pelo service; o mapper so monta a entidade. */
+    /** O centro já resolvido (e validado) é injetado pelo service; o mapper só monta a entidade. */
     public Course toEntity(CreateCourseRequest request, Center center) {
         Course course = new Course();
         course.setName(request.name());

@@ -11,12 +11,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
- * Centro academico. Dado de referencia (semeado via migration), referenciado pelos cursos.
+ * Centro acadêmico. Dado de referência (semeado via migration), referenciado pelos cursos.
  *
- * Read-only no escopo atual: nao ha CRUD de centro, entao a entidade nao expoe setters
- * (nao haveria quem os usasse). O updatedAt, por outro lado, existe de proposito: o centro
- * e a entidade planejada para ganhar edicao/CRUD no futuro (db_diagram.md 7.1), e ja deixar
- * a coluna no schema torna essa evolucao aditiva -- nao sera preciso uma nova migration so
+ * Read-only no escopo atual: não há CRUD de centro, então a entidade não expõe setters
+ * (não haveria quem os usasse). O updatedAt, por outro lado, existe de propósito: o centro
+ * é a entidade planejada para ganhar edição/CRUD no futuro (db_diagram.md 7.1), e já deixar
+ * a coluna no schema torna essa evolução aditiva -- não será preciso uma nova migration só
  * para adicionar o campo quando o update existir.
  */
 @Entity

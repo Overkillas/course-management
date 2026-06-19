@@ -15,7 +15,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 /**
- * Regra de negocio do curso: cadastrar, listar e excluir. A criacao valida que o centro
+ * Regra de negócio do curso: cadastrar, listar e excluir. A criação valida que o centro
  * referenciado existe antes de persistir.
  */
 @ApplicationScoped
@@ -44,7 +44,7 @@ public class CourseService {
     public CourseResponse create(CreateCourseRequest request) {
         Center center = centerRepository.findByIdOptional(request.centerId())
             .orElseThrow(() -> new InvalidRequestException(
-                "centerId", "Centro " + request.centerId() + " nao encontrado"));
+                "centerId", "Centro " + request.centerId() + " não encontrado"));
 
         Course course = mapper.toEntity(request, center);
         courseRepository.persist(course);
@@ -55,7 +55,7 @@ public class CourseService {
     public void delete(Integer id) {
         boolean deleted = courseRepository.deleteById(id);
         if (!deleted) {
-            throw new ResourceNotFoundException("Curso " + id + " nao encontrado");
+            throw new ResourceNotFoundException("Curso " + id + " não encontrado");
         }
     }
 }
