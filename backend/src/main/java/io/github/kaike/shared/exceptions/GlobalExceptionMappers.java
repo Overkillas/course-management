@@ -37,6 +37,31 @@ public class GlobalExceptionMappers {
         return build(Response.Status.BAD_REQUEST.getStatusCode(), error);
     }
 
+    /** Recurso enderecado pela URL nao existe: 404. */
+    @ServerExceptionMapper
+    public Response handleNotFound(ResourceNotFoundException ex, UriInfo uriInfo) {
+        ApiError error = ApiError.of(
+            Response.Status.NOT_FOUND.getStatusCode(),
+            Response.Status.NOT_FOUND.getReasonPhrase(),
+            ex.getMessage(),
+            uriInfo.getPath()
+        );
+        return build(Response.Status.NOT_FOUND.getStatusCode(), error);
+    }
+
+    /** Valor invalido no corpo (ex.: referencia inexistente): 400 como violacao de campo. */
+    @ServerExceptionMapper
+    public Response handleInvalidRequest(InvalidRequestException ex, UriInfo uriInfo) {
+        ApiError error = ApiError.withViolations(
+            Response.Status.BAD_REQUEST.getStatusCode(),
+            Response.Status.BAD_REQUEST.getReasonPhrase(),
+            "Dados de entrada invalidos",
+            uriInfo.getPath(),
+            List.of(new ApiError.FieldViolation(ex.getField(), ex.getMessage()))
+        );
+        return build(Response.Status.BAD_REQUEST.getStatusCode(), error);
+    }
+
     /** Excecoes do proprio JAX-RS (rota inexistente, metodo nao suportado, etc.). */
     @ServerExceptionMapper
     public Response handleWebApplication(WebApplicationException ex, UriInfo uriInfo) {
