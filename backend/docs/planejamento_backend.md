@@ -245,9 +245,11 @@ garante uma entrega válida.
 papel, incluindo os endpoints próprios do aluno e a troca de senha no primeiro
 acesso. Ao final, o sistema distingue papéis e protege os recursos de fato.
 
-**Etapa 4: Qualidade.** Reforço da cobertura de testes automatizados sobre as
-regras de negócio e os fluxos de acesso. Garante que o que foi construído está
-defendido contra regressão.
+**Etapa 4: Qualidade.** Os testes automatizados são escritos junto de cada
+feature, conforme cada módulo é construído (ver seção 8), então não é aqui que
+os testes começam: esta etapa consolida a cobertura, fecha lacunas e edge cases
+e cobre os fluxos de acesso por papel, que só passam a existir após a Etapa 3.
+Garante que o que foi construído está defendido contra regressão.
 
 **Etapa 5: Camadas avançadas de segurança.** Refresh token com revogação,
 recuperação de senha por email e limitação de requisições. Acréscimos sobre uma
@@ -278,6 +280,11 @@ que mais importam:
 
 A intenção não é perseguir um número de cobertura, e sim testar os pontos onde
 uma falha teria consequência real de negócio.
+
+**Cadência.** Os testes são escritos junto de cada feature, no mesmo momento em
+que a regra é implementada, e não num passe único ao final. Cada módulo entra
+com a prova das suas regras; a Etapa 4 (seção 7) atua como reforço e fechamento
+de lacunas, não como o ponto em que os testes começam.
 
 ---
 
