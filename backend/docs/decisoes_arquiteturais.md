@@ -91,6 +91,22 @@ conveniente para casos muito simples. O custo é o acoplamento entre o modelo e 
 persistência. Como valorizo camadas claras e testes das regras de negócio, o
 padrão Repository me pareceu o mais coerente para este projeto.
 
+### 2.3. Estratégia de busca: `JOIN FETCH` para evitar N+1
+
+As associações entre entidades são mapeadas como `LAZY` (carregadas sob demanda),
+o padrão seguro que evita arrastar o grafo inteiro a cada consulta. O efeito
+colateral conhecido é o **N+1**: ao listar N entidades e tocar uma associação lazy
+de cada uma (por exemplo, o centro de cada curso, para montar o DTO de resposta), o
+ORM dispara 1 consulta da lista mais 1 por associação acessada.
+
+Por isso, as consultas de listagem que precisam de uma associação a materializam num
+único SQL com `JOIN FETCH`, em vez de deixar o lazy disparar consulta por consulta
+(ver `CourseRepository.listAllWithCenter`). No volume deste desafio o ganho é
+imperceptível, e o cache de primeiro nível do Hibernate já limita o custo aos
+registros distintos, mas declaro o `JOIN FETCH` deliberadamente para expressar a
+intenção de design e manter a leitura à prova de escala. É o mesmo critério dos
+índices secundários em `db_diagram.md` §4: imperceptível agora, decisivo em escala.
+
 ---
 
 ## 3. Convenção de nomenclatura de pacotes
