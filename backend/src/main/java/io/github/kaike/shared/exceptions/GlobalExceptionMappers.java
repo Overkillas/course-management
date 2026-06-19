@@ -12,15 +12,15 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
 /**
- * Tratador global de excecoes: captura falhas e as converte para {@link ApiError}, de modo
- * que o tratamento de erro nao fique espalhado pelos resources (ver decisoes 6). O Quarkus
- * escolhe o mapper pelo tipo mais especifico da excecao.
+ * Tratador global de exceções: captura falhas e as converte para {@link ApiError}, de modo
+ * que o tratamento de erro não fique espalhado pelos resources (ver decisões 6). O Quarkus
+ * escolhe o mapper pelo tipo mais específico da exceção.
  */
 public class GlobalExceptionMappers {
 
     private static final Logger LOG = Logger.getLogger(GlobalExceptionMappers.class);
 
-    /** Falha de Bean Validation na entrada: 400 com a lista de campos invalidos. */
+    /** Falha de Bean Validation na entrada: 400 com a lista de campos inválidos. */
     @ServerExceptionMapper
     public Response handleValidation(ConstraintViolationException ex, UriInfo uriInfo) {
         List<ApiError.FieldViolation> violations = ex.getConstraintViolations().stream()
@@ -30,14 +30,14 @@ public class GlobalExceptionMappers {
         ApiError error = ApiError.withViolations(
             Response.Status.BAD_REQUEST.getStatusCode(),
             Response.Status.BAD_REQUEST.getReasonPhrase(),
-            "Dados de entrada invalidos",
+            "Dados de entrada inválidos",
             uriInfo.getPath(),
             violations
         );
         return build(Response.Status.BAD_REQUEST.getStatusCode(), error);
     }
 
-    /** Recurso enderecado pela URL nao existe: 404. */
+    /** Recurso endereçado pela URL não existe: 404. */
     @ServerExceptionMapper
     public Response handleNotFound(ResourceNotFoundException ex, UriInfo uriInfo) {
         ApiError error = ApiError.of(
@@ -49,20 +49,32 @@ public class GlobalExceptionMappers {
         return build(Response.Status.NOT_FOUND.getStatusCode(), error);
     }
 
-    /** Valor invalido no corpo (ex.: referencia inexistente): 400 como violacao de campo. */
+    /** Valor inválido no corpo (ex.: referência inexistente): 400 como violação de campo. */
     @ServerExceptionMapper
     public Response handleInvalidRequest(InvalidRequestException ex, UriInfo uriInfo) {
         ApiError error = ApiError.withViolations(
             Response.Status.BAD_REQUEST.getStatusCode(),
             Response.Status.BAD_REQUEST.getReasonPhrase(),
-            "Dados de entrada invalidos",
+            "Dados de entrada inválidos",
             uriInfo.getPath(),
             List.of(new ApiError.FieldViolation(ex.getField(), ex.getMessage()))
         );
         return build(Response.Status.BAD_REQUEST.getStatusCode(), error);
     }
 
-    /** Excecoes do proprio JAX-RS (rota inexistente, metodo nao suportado, etc.). */
+    /** Violação de unicidade (ex.: e-mail ou matrícula já existentes): 409. */
+    @ServerExceptionMapper
+    public Response handleConflict(ConflictException ex, UriInfo uriInfo) {
+        ApiError error = ApiError.of(
+            Response.Status.CONFLICT.getStatusCode(),
+            Response.Status.CONFLICT.getReasonPhrase(),
+            ex.getMessage(),
+            uriInfo.getPath()
+        );
+        return build(Response.Status.CONFLICT.getStatusCode(), error);
+    }
+
+    /** Exceções do próprio JAX-RS (rota inexistente, método não suportado, etc.). */
     @ServerExceptionMapper
     public Response handleWebApplication(WebApplicationException ex, UriInfo uriInfo) {
         Response.StatusType status = ex.getResponse().getStatusInfo();
@@ -75,10 +87,10 @@ public class GlobalExceptionMappers {
         return build(status.getStatusCode(), error);
     }
 
-    /** Qualquer falha nao prevista: 500 generico, sem vazar detalhes internos. */
+    /** Qualquer falha não prevista: 500 genérico, sem vazar detalhes internos. */
     @ServerExceptionMapper
     public Response handleUnexpected(Throwable ex, UriInfo uriInfo) {
-        LOG.error("Erro inesperado ao processar a requisicao", ex);
+        LOG.error("Erro inesperado ao processar a requisição", ex);
         ApiError error = ApiError.of(
             Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
             Response.Status.INTERNAL_SERVER_ERROR.getReasonPhrase(),
@@ -92,7 +104,7 @@ public class GlobalExceptionMappers {
         return Response.status(status).type(MediaType.APPLICATION_JSON).entity(error).build();
     }
 
-    /** Extrai o nome do campo (ultimo no do caminho da propriedade). */
+    /** Extrai o nome do campo (último nó do caminho da propriedade). */
     private static String fieldName(ConstraintViolation<?> violation) {
         String field = null;
         for (Path.Node node : violation.getPropertyPath()) {
