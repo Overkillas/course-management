@@ -51,7 +51,7 @@ deixa dívida estrutural.
 | Migrations | Flyway | Versiona o schema e permite expressar fielmente restrições que a geração automática de schema não cobre (checagens e comportamento de exclusão). Também versiona os dados de referência (seeds). |
 | Validação | Bean Validation (Hibernate Validator) | Validação declarativa de entrada no backend, um dos diferenciais pedidos. |
 | Documentação da API | OpenAPI + Swagger UI | Contrato navegável da API. Facilita o avaliador testar sem ferramenta externa e serve de referência para o consumo pelo frontend. |
-| Autenticação | JWT (assinatura assimétrica) | Padrão de mercado para APIs stateless, base para o controle de acesso por papel. |
+| Autenticação | JWT | Padrão de mercado para APIs stateless, base para o controle de acesso por papel. Simétrico por ser um monólito (sem terceiros verificando o token com chave pública); o assimétrico seria complexidade sem retorno aqui. |
 
 **Por que Flyway e não geração automática de schema.** A geração automática de
 tabelas pelo ORM cria o essencial, mas não reproduz fielmente certas regras de
@@ -131,10 +131,12 @@ seção 3). O aluno é um usuário que também consegue autenticar, o que permit
 demonstrar a diferença real de permissões entre os dois papéis.
 
 **Criação de aluno e primeira senha.** O administrador cadastra o aluno e define
-uma senha inicial (tratada como temporária). No primeiro acesso, o aluno
-autenticado pode trocar a própria senha. Esse fluxo é simples e não depende de
-nenhuma infraestrutura externa, porque o usuário já está autenticado no momento
-da troca. As senhas nunca são armazenadas em texto puro, apenas seu hash.
+uma senha inicial, tratada como temporária. No primeiro acesso, o aluno é
+obrigado a trocar a própria senha: enquanto a flag `must_change_password` estiver
+ativa, ele fica bloqueado a tudo exceto o endpoint de troca. Esse fluxo é simples
+e não depende de infraestrutura externa, porque o usuário já está autenticado no
+momento da troca. As senhas nunca são armazenadas em texto puro, apenas seu hash
+(bcrypt).
 
 *Alternativa considerada e descartada.* Cheguei a desenhar um fluxo em que a
 senha inicial seria gerada automaticamente pelo sistema (um valor padrão como
@@ -146,6 +148,26 @@ parti do princípio de que dar a ele mais controle (definir explicitamente a
 senha inicial) é preferível a esconder essa decisão atrás de uma geração
 automática. A geração automática fica registrada como uma evolução possível,
 caso a regra de negócio venha a favorecer menos intervenção do admin.
+
+**Política de senha (e onde ela deliberadamente não se aplica).** A senha tem três
+pontos de entrada, com rigor diferente em cada, por intenção:
+
+- *Senha inicial (definida pelo admin):* apenas tamanho mínimo, sem regra de
+  complexidade. Ela é temporária e será substituída no primeiro acesso, então
+  exigir maiúscula, dígito e caractere especial só geraria fricção para o admin,
+  sem ganho real.
+- *Senha escolhida pelo aluno (na troca):* aqui vale a política completa de
+  complexidade (tamanho mínimo mais maiúscula, minúscula, dígito e caractere
+  especial), expressa por uma constraint de validação dedicada. É a senha que de
+  fato persiste e passa a ser usada.
+- *Login:* nenhuma validação de política. O login pergunta "esta é a senha
+  correta?", não "esta é forte?". Validar complexidade ali bloquearia a própria
+  senha temporária (fraca por design) e ainda vazaria a política para um chamador
+  não autenticado. O login apenas confere as credenciais contra o hash.
+
+O bloqueio do primeiro acesso é o que torna esse arranjo coerente: como o aluno
+não consegue usar o sistema sem trocar a senha temporária, a senha que ele
+efetivamente usa é sempre a que passou pela política completa.
 
 **Controle de acesso por papel.** As operações de gestão são restritas ao
 administrador. Para que a distinção de papéis seja efetivamente demonstrável (e
@@ -164,6 +186,16 @@ estado no servidor de forma deliberada (o estado fica em um cache dedicado). Ess
 troca de mais uma peça de infraestrutura. Por ser a camada de maior custo e
 menor retorno relativo para o que o desafio avalia, ela é a de menor prioridade
 (seção 6).
+
+**Assinatura do token, segredos e seed do administrador.** O JWT usa assinatura
+simétrica (HS256): um único segredo assina e verifica. Por ser um monólito, sem
+serviços terceiros validando o token com chave pública, o assimétrico seria
+complexidade sem retorno. O segredo, a duração do token e as credenciais do
+administrador inicial vivem em variáveis de ambiente (`.env`), com valores padrão
+apenas para desenvolvimento e teste. O administrador, por precisar de hash e de
+credenciais configuráveis, é semeado por um inicializador da aplicação no boot,
+não por migration (que é estática); os centros, dado de referência fixo, seguem
+semeados via Flyway.
 
 **Recuperação de senha e proteção contra abuso.** Como evolução do fluxo de
 autenticação, pretendo oferecer recuperação de senha para o usuário que não está
