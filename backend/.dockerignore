@@ -1,5 +1,12 @@
-*
-!target/*-runner
-!target/*-runner.jar
-!target/lib/*
-!target/quarkus-app/*
+# O Dockerfile é multi-stage e builda do fonte dentro do container, então o contexto
+# precisa de pom.xml e src/. Aqui só ignoramos o que não deve ir pro build.
+
+# Artefatos de build locais (o build acontece dentro do container)
+target/
+
+# IDE e sistema operacional
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
