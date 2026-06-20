@@ -248,8 +248,15 @@ necessidade que apliquei em outras decisões do projeto.
 A organização por domínio se concretiza nos módulos abaixo, que derivei
 diretamente da modelagem (`db_diagram.md`) e do escopo (`planejamento_backend.md`):
 
-- **`user`**: o usuário do sistema (administrador e aluno), incluindo as operações
-  de cadastro, listagem e exclusão de alunos, e a base da autenticação.
+- **`user`**: o usuário do sistema (administrador e aluno), com as operações de
+  cadastro, listagem e exclusão de alunos. A entidade `User` é a base sobre a qual
+  a autenticação opera (ver módulo `auth`).
+- **`auth`**: a autenticação e a autorização (login, emissão e verificação do JWT,
+  controle de acesso). Fica em módulo próprio, e não dentro de `user`, porque é uma
+  preocupação distinta da gestão de usuários e com crescimento próprio (refresh
+  token, recuperação de senha e rate limiting, na evolução). Depende de `user` (lê
+  credenciais e papel pelo `UserRepository`), numa dependência acíclica `auth ->
+  user`.
 - **`course`**: o curso, com cadastro, listagem e exclusão.
 - **`enrollment`**: a matrícula, que liga aluno e curso. Modelei como conceito
   próprio (e não como um simples relacionamento implícito) porque carrega seus
@@ -338,6 +345,11 @@ reduzido de `center` (seção 8.1).
 │   └── dtos/
 │       ├── (objeto de entrada: criação de usuário)
 │       └── (objeto de saída: resposta de usuário)
+│
+├── auth/
+│   ├── resource/      (login, endpoint público)
+│   ├── service/       (validação de credenciais e emissão do JWT)
+│   └── dtos/
 │
 ├── course/
 │   └── (mesma estrutura de camadas)
