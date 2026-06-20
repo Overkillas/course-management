@@ -17,8 +17,10 @@ import io.github.kaike.user.mapper.UserMapper;
 import io.github.kaike.user.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  * Regra de negócio da matrícula, sempre a partir do curso: matricular um aluno e listar os
@@ -69,7 +71,19 @@ public class EnrollmentService {
         Enrollment enrollment = new Enrollment();
         enrollment.setUser(student);
         enrollment.setCourse(course);
-        enrollmentRepository.persist(enrollment);
+
+        // O pré-check acima resolve o duplicado comum; este try/catch cobre a corrida: duas
+        // requisições podem passar o exists() ao mesmo tempo (cada uma no seu snapshot) e só a
+        // UNIQUE do banco barra a segunda. persistAndFlush força o INSERT agora (não no commit),
+        // para a violação estourar aqui e virar 409 em vez de 500.
+        try {
+            enrollmentRepository.persistAndFlush(enrollment);
+        } catch (PersistenceException e) {
+            if (e.getCause() instanceof ConstraintViolationException) {
+                throw new ConflictException("Aluno já matriculado neste curso");
+            }
+            throw e;
+        }
         return mapper.toResponse(enrollment);
     }
 

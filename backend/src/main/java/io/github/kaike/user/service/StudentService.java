@@ -10,8 +10,10 @@ import io.github.kaike.user.mapper.UserMapper;
 import io.github.kaike.user.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  * Regra de negócio do aluno: cadastrar, listar e excluir. O cadastro define o aluno como
@@ -53,15 +55,28 @@ public class StudentService {
         student.setRole(UserRole.ALUNO);
         student.setMustChangePassword(true);
 
-        userRepository.persist(student);
+        // O pré-check acima resolve o duplicado comum; este try/catch cobre a corrida: dois
+        // cadastros simultâneos com o mesmo e-mail passam o emailExists() ao mesmo tempo e só a
+        // UNIQUE do banco barra o segundo. persistAndFlush força o INSERT agora (não no commit),
+        // para a violação estourar aqui e virar 409 em vez de 500.
+        try {
+            userRepository.persistAndFlush(student);
+        } catch (PersistenceException e) {
+            if (e.getCause() instanceof ConstraintViolationException) {
+                throw new ConflictException("E-mail já cadastrado");
+            }
+            throw e;
+        }
         return mapper.toStudentResponse(student);
     }
 
     @Transactional
     public void delete(Integer id) {
-        boolean deleted = userRepository.deleteById(id);
-        if (!deleted) {
-            throw new ResourceNotFoundException("Aluno " + id + " não encontrado");
-        }
+        // Só exclui se for de fato um aluno: o endpoint /students não deve apagar um admin por
+        // id. Um usuário inexistente ou de outro papel é tratado como "aluno não encontrado".
+        User student = userRepository.findByIdOptional(id)
+            .filter(user -> user.getRole() == UserRole.ALUNO)
+            .orElseThrow(() -> new ResourceNotFoundException("Aluno " + id + " não encontrado"));
+        userRepository.delete(student);
     }
 }
