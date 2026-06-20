@@ -16,6 +16,6 @@ public class CourseRepository implements PanacheRepositoryBase<Course, Integer> 
      * associação lazy disparar uma consulta por curso (problema N+1). Ver decisões 2.3.
      */
     public List<Course> listAllWithCenter() {
-        return find("SELECT c FROM Course c JOIN FETCH c.center").list();
+        return find("SELECT c FROM Course c JOIN FETCH c.center ORDER BY c.name").list();
     }
 }
