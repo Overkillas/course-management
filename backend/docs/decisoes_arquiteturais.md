@@ -334,9 +334,14 @@ custo (são apenas views), mas a escrita não deve existir nos dois lados, ou ha
 endpoints mutando o mesmo vínculo. Por isso a matrícula tem um único dono, o curso. Expor
 a mesma operação também em `/students/{id}/courses` seria duplicar a mutação.
 
-**O lado do aluno fica fora deste escopo.** Um `GET /students/{id}/courses` (o aluno
-vendo os próprios cursos) não é pedido pelo desafio e só ganha um agente real na Etapa 3
-(aluno autenticado, com autorização por posse).
+**O lado do aluno, na Etapa 3, vira `GET /me/courses`.** Com a autenticação surge o agente
+que faltava: o aluno autenticado vendo os próprios cursos. Realizei isso como `GET /me/courses`,
+e não `GET /students/{id}/courses`: em um endpoint de posse, a identidade deve vir do token (claim
+`sub`), não de um id no path, assim, o aluno só acessa o que é dele, sem precisar conferir se o
+`{id}` da URL bate com o dono do token. O resource vive no módulo `enrollment` (a regra é de
+matrícula), separado do `EnrollmentResource` porque a rota e a tranca diferem (`@Authenticated`,
+não admin-only; ver §2.4). É leitura do lado do aluno, então não duplica a escrita, que continua
+tendo o curso como dono único.
 
 **O nesting na URL não acopla o domínio.** O path ser `/courses/{id}/students` é uma
 decisão de superfície HTTP. A lógica e a regra central (um aluno não se matricula duas
