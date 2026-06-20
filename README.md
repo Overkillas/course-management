@@ -90,19 +90,58 @@ Documentos de decisão técnica já disponíveis:
 
 ## Como executar
 
-> _Em construção._ Esta seção será preenchida conforme o empacotamento for
-> implementado. A intenção é que a aplicação completa suba via Docker Compose com
-> um único comando, e que o backend também possa ser executado de forma isolada
-> em modo de desenvolvimento.
+A forma recomendada de subir o sistema é via **Docker Compose**: um comando sobe o
+backend e o MySQL já conectados, com as migrations e os centros de referência
+aplicados automaticamente no primeiro boot.
 
 ### Pré-requisitos
 
-> _Em construção._ (Lista de pré-requisitos como JDK, Docker e demais ferramentas.)
+- **Docker** e **Docker Compose** (caminho recomendado).
+- Para rodar o backend isolado em modo de desenvolvimento: **JDK 17+** (o Maven vem
+  pelo wrapper `./mvnw`, não precisa instalar à parte).
 
-### Executando o projeto
+### Subindo com Docker Compose (recomendado)
 
-> _Em construção._ (Passo a passo de execução via Docker Compose e em modo de
-> desenvolvimento.)
+1. Crie o seu `.env` a partir do template versionado:
+
+   ```bash
+   cp .env.example .env          # Linux / macOS
+   ```
+
+   ```powershell
+   Copy-Item .env.example .env   # Windows (PowerShell)
+   ```
+
+2. Suba tudo com um comando:
+
+   ```bash
+   docker compose up --build
+   ```
+
+Os endpoints ficam disponíveis em `http://localhost:8080` (ou na porta `APP_PORT`
+definida no `.env`):
+
+- **API:** `http://localhost:8080`
+- **Documentação interativa (Swagger UI):** `http://localhost:8080/q/docs`
+- **Health check:** `http://localhost:8080/q/health`
+
+Para derrubar: `docker compose down` (ou `docker compose down -v` para apagar
+também os dados do banco).
+
+### Backend em modo de desenvolvimento
+
+Dentro de `backend/`, com o Docker em execução (o Quarkus sobe um MySQL efêmero
+sozinho via Dev Services, sem configuração manual de conexão):
+
+```bash
+./mvnw quarkus:dev
+```
+
+Live reload ativo e Swagger em `/q/docs`. Para rodar a suíte de testes:
+
+```bash
+./mvnw test
+```
 
 ---
 
