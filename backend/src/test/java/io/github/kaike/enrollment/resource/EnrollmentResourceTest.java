@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.not;
 
 import io.github.kaike.enrollment.repository.EnrollmentRepository;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.response.Response;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test;
  * que o planejamento §8 prioriza. Os dados são criados via HTTP e limpos ao fim.
  */
 @QuarkusTest
+@TestSecurity(user = "admin", roles = "admin")
 class EnrollmentResourceTest {
 
     @Inject

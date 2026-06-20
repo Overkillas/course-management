@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
  * criaram. Verifica também que o hash da senha nunca volta na resposta.
  */
 @QuarkusTest
+@TestSecurity(user = "admin", roles = "admin")
 class StudentResourceTest {
 
     @Test

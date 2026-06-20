@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
  * centros semeados na V2 existem). Estabelece o padrão @QuarkusTest + RestAssured.
  */
 @QuarkusTest
+@TestSecurity(user = "admin", roles = "admin")
 class CenterResourceTest {
 
     @Test

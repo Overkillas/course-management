@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
  * testes que criam dados removem o que criaram, para não interferir nos demais.
  */
 @QuarkusTest
+@TestSecurity(user = "admin", roles = "admin")
 class CourseResourceTest {
 
     @Test
