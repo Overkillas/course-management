@@ -6,6 +6,7 @@ import io.github.kaike.user.domain.User;
 import io.github.kaike.user.domain.UserRole;
 import io.github.kaike.user.dtos.CreateStudentRequest;
 import io.github.kaike.user.dtos.StudentResponse;
+import io.github.kaike.user.dtos.UserResponse;
 import io.github.kaike.user.mapper.UserMapper;
 import io.github.kaike.user.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,30 +17,32 @@ import java.util.List;
 import org.hibernate.exception.ConstraintViolationException;
 
 /**
- * Regra de negócio do aluno: cadastrar, listar e excluir. O cadastro define o aluno como
- * papel ALUNO, marca a senha para troca no primeiro acesso e nunca persiste senha em texto
- * puro (apenas o hash).
+ * Regra de negócio em torno do usuário (um service por agregado). Reúne a gestão de alunos
+ * pelo admin (cadastrar, listar e excluir, sempre no subconjunto ALUNO) e o self-service do
+ * próprio usuário autenticado (consultar o perfil; a troca de senha entra adiante na Etapa 3).
+ * Quem pode chamar cada operação é decidido nos resources, não aqui (StudentResource é
+ * admin-only, MeResource é qualquer autenticado).
  */
 @ApplicationScoped
-public class StudentService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
 
     @Inject
-    public StudentService(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<StudentResponse> listAll() {
+    public List<StudentResponse> listStudents() {
         return mapper.toStudentResponseList(userRepository.listByRole(UserRole.ALUNO));
     }
 
     @Transactional
-    public StudentResponse create(CreateStudentRequest request) {
+    public StudentResponse createStudent(CreateStudentRequest request) {
         // 409 com mensagem clara (e não resposta genérica) é aceitável aqui porque o endpoint
         // é administrativo: o admin já enxerga todos os alunos pelo GET /students, então avisar
         // "e-mail já cadastrado" não revela nada novo (não há risco de enumeration). A resposta
@@ -71,12 +74,18 @@ public class StudentService {
     }
 
     @Transactional
-    public void delete(Integer id) {
+    public void deleteStudent(Integer id) {
         // Só exclui se for de fato um aluno: o endpoint /students não deve apagar um admin por
         // id. Um usuário inexistente ou de outro papel é tratado como "aluno não encontrado".
         User student = userRepository.findByIdOptional(id)
             .filter(user -> user.getRole() == UserRole.ALUNO)
             .orElseThrow(() -> new ResourceNotFoundException("Aluno " + id + " não encontrado"));
         userRepository.delete(student);
+    }
+
+    public UserResponse getProfile(Integer userId) {
+        User user = userRepository.findByIdOptional(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuário " + userId + " não encontrado"));
+        return mapper.toUserResponse(user);
     }
 }

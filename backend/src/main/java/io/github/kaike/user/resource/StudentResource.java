@@ -2,7 +2,7 @@ package io.github.kaike.user.resource;
 
 import io.github.kaike.user.dtos.CreateStudentRequest;
 import io.github.kaike.user.dtos.StudentResponse;
-import io.github.kaike.user.service.StudentService;
+import io.github.kaike.user.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -31,23 +31,23 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @RolesAllowed("admin")
 public class StudentResource {
 
-    private final StudentService service;
+    private final UserService service;
 
     @Inject
-    public StudentResource(StudentService service) {
+    public StudentResource(UserService service) {
         this.service = service;
     }
 
     @GET
     @Operation(summary = "Lista todos os alunos")
     public List<StudentResponse> list() {
-        return service.listAll();
+        return service.listStudents();
     }
 
     @POST
     @Operation(summary = "Cadastra um aluno")
     public Response create(@Valid CreateStudentRequest request) {
-        StudentResponse created = service.create(request);
+        StudentResponse created = service.createStudent(request);
         return Response.status(Response.Status.CREATED).entity(created).build();
     }
 
@@ -55,7 +55,7 @@ public class StudentResource {
     @Path("/{id}")
     @Operation(summary = "Exclui um aluno")
     public Response delete(@PathParam("id") @Parameter(example = "1") Integer id) {
-        service.delete(id);
+        service.deleteStudent(id);
         return Response.noContent().build();
     }
 }
