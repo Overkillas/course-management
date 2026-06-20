@@ -107,6 +107,29 @@ registros distintos, mas declaro o `JOIN FETCH` deliberadamente para expressar a
 intenção de design e manter a leitura à prova de escala. É o mesmo critério dos
 índices secundários em `db_diagram.md` §4: imperceptível agora, decisivo em escala.
 
+### 2.4. Granularidade: um service por agregado, resources por rota
+
+Vindo de um contexto de *controllers* (Spring MVC, NestJs...), o instinto natural seria reunir
+tudo que envolve o usuário numa única classe (um `UserController`). Aqui as camadas
+são fatiadas em eixos diferentes, de propósito:
+
+- O **service** é organizado por **agregado de domínio**: existe um único
+  `UserService` com a regra de negócio do usuário (gestão de alunos pelo admin e o
+  self-service do próprio usuário).
+- Os **resources** são organizados por **rota HTTP e autorização**: `/students`
+  (CRUD de alunos, restrito ao admin) e `/me` (perfil do próprio autenticado) são
+  dois `resource` distintos, ambos finos sobre o mesmo `UserService`.
+
+O que empurra essa separação no resource não é uma regra do framework. O que decide é a
+**escolha das URLs**: `/students` (específico do domínio, melhor que um genérico
+`/users` para este desafio) e `/me` não compartilham prefixo, e no JAX-RS uma classe
+tem um único `@Path` base. Mantendo essas URLs, duas classes é o encaixe natural.
+Soma-se a isso o `@RolesAllowed("admin")` no nível da classe do `StudentResource`,
+que funciona como rede de segurança (todo método é admin, sem exceção); numa classe
+única, a autorização iria método a método.
+
+Em resumo: o service unifica por domínio; os resources separam por rota e tranca.
+
 ---
 
 ## 3. Convenção de nomenclatura de pacotes
