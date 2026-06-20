@@ -51,7 +51,7 @@ deixa dívida estrutural.
 | Migrations | Flyway | Versiona o schema e permite expressar fielmente restrições que a geração automática de schema não cobre (checagens e comportamento de exclusão). Também versiona os dados de referência (seeds). |
 | Validação | Bean Validation (Hibernate Validator) | Validação declarativa de entrada no backend, um dos diferenciais pedidos. |
 | Documentação da API | OpenAPI + Swagger UI | Contrato navegável da API. Facilita o avaliador testar sem ferramenta externa e serve de referência para o consumo pelo frontend. |
-| Autenticação | JWT | Padrão de mercado para APIs stateless, base para o controle de acesso por papel. Simétrico por ser um monólito (sem terceiros verificando o token com chave pública); o assimétrico seria complexidade sem retorno aqui. |
+| Autenticação | JWT (assinatura assimétrica, RS256) | Padrão de mercado para APIs stateless, base para o controle de acesso por papel. RSA em PEM é o caminho nativo do tooling do Quarkus. |
 
 **Por que Flyway e não geração automática de schema.** A geração automática de
 tabelas pelo ORM cria o essencial, mas não reproduz fielmente certas regras de
@@ -187,15 +187,19 @@ troca de mais uma peça de infraestrutura. Por ser a camada de maior custo e
 menor retorno relativo para o que o desafio avalia, ela é a de menor prioridade
 (seção 6).
 
-**Assinatura do token, segredos e seed do administrador.** O JWT usa assinatura
-simétrica (HS256): um único segredo assina e verifica. Por ser um monólito, sem
-serviços terceiros validando o token com chave pública, o assimétrico seria
-complexidade sem retorno. O segredo, a duração do token e as credenciais do
-administrador inicial vivem em variáveis de ambiente (`.env`), com valores padrão
-apenas para desenvolvimento e teste. O administrador, por precisar de hash e de
-credenciais configuráveis, é semeado por um inicializador da aplicação no boot,
-não por migration (que é estática); os centros, dado de referência fixo, seguem
-semeados via Flyway.
+**Assinatura do token, chaves e seed do administrador.** O JWT usa assinatura
+**assimétrica (RS256)**: a chave privada assina, a pública verifica. Cheguei a
+adotar HS256 simétrico (um segredo único), por parecer mais simples num monólito,
+mas na prática o tooling do Quarkus/SmallRye é orientado a RSA e tornou o caminho
+simétrico custoso e frágil (o resolver insistia em tratar o segredo como chave
+PEM, e o par de chaves auto-gerado de dev/test sobrescrevia a nossa chave). O
+assimétrico, com chaves em PEM, é o caminho nativo e robusto; fica como aprendizado
+registrado. As chaves são um par de demo versionado em resources (em produção,
+troque por um par real ou injetado); a duração do token e as credenciais do
+administrador inicial vêm de variáveis de ambiente (`.env`). O administrador, por
+precisar de hash e de credenciais configuráveis, é semeado por um inicializador da
+aplicação no boot, não por migration (que é estática); os centros, dado de
+referência fixo, seguem semeados via Flyway.
 
 **Recuperação de senha e proteção contra abuso.** Como evolução do fluxo de
 autenticação, pretendo oferecer recuperação de senha para o usuário que não está
@@ -317,6 +321,12 @@ uma falha teria consequência real de negócio.
 que a regra é implementada, e não num passe único ao final. Cada módulo entra
 com a prova das suas regras; a Etapa 4 (seção 7) atua como reforço e fechamento
 de lacunas, não como o ponto em que os testes começam.
+
+**Testando endpoints protegidos.** Os testes funcionais (CRUD, matrícula) rodam
+autenticados como admin via `@TestSecurity`, mantendo o foco na regra de negócio
+sem o ruído de obter um token a cada chamada. A autorização em si (401 sem token,
+403 com papel errado, 200 com admin) fica num teste dedicado com tokens reais, que
+exercita o caminho completo do JWT (verificação e papel).
 
 ---
 
