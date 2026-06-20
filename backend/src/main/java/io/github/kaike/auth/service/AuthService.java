@@ -24,7 +24,6 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final String secret;
     private final long durationSeconds;
     private final String issuer;
 
@@ -32,13 +31,11 @@ public class AuthService {
     public AuthService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
-        @ConfigProperty(name = "jwt.secret") String secret,
         @ConfigProperty(name = "jwt.duration") long durationSeconds,
         @ConfigProperty(name = "mp.jwt.verify.issuer") String issuer
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.secret = secret;
         this.durationSeconds = durationSeconds;
         this.issuer = issuer;
     }
@@ -58,7 +55,9 @@ public class AuthService {
             .groups(Set.of(user.getRole().name().toLowerCase()))
             .claim("mustChangePassword", user.isMustChangePassword())
             .expiresIn(Duration.ofSeconds(durationSeconds))
-            .signWithSecret(secret);
+            // Assina com a chave privada de smallrye.jwt.sign.key.location (RS256); a
+            // verificação usa a pública de mp.jwt.verify.publickey.location.
+            .sign();
 
         return new LoginResponse(token);
     }
