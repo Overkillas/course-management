@@ -26,4 +26,15 @@ public class EnrollmentRepository implements PanacheRepositoryBase<Enrollment, I
             courseId
         ).list();
     }
+
+    /**
+     * Matrículas de um aluno com o curso (e seu centro) já materializados (JOIN FETCH), para
+     * montar a lista de cursos do aluno sem o N+1 ao acessar cada curso (ver decisões 2.3).
+     */
+    public List<Enrollment> listByStudentWithCourse(Integer studentId) {
+        return find(
+            "SELECT e FROM Enrollment e JOIN FETCH e.course c JOIN FETCH c.center WHERE e.user.id = ?1 ORDER BY c.name",
+            studentId
+        ).list();
+    }
 }

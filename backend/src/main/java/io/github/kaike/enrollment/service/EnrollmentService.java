@@ -1,6 +1,8 @@
 package io.github.kaike.enrollment.service;
 
 import io.github.kaike.course.domain.Course;
+import io.github.kaike.course.dtos.CourseResponse;
+import io.github.kaike.course.mapper.CourseMapper;
 import io.github.kaike.course.repository.CourseRepository;
 import io.github.kaike.enrollment.domain.Enrollment;
 import io.github.kaike.enrollment.dtos.CreateEnrollmentRequest;
@@ -35,6 +37,7 @@ public class EnrollmentService {
     private final UserRepository userRepository;
     private final EnrollmentMapper mapper;
     private final UserMapper userMapper;
+    private final CourseMapper courseMapper;
 
     @Inject
     public EnrollmentService(
@@ -42,13 +45,15 @@ public class EnrollmentService {
         CourseRepository courseRepository,
         UserRepository userRepository,
         EnrollmentMapper mapper,
-        UserMapper userMapper
+        UserMapper userMapper,
+        CourseMapper courseMapper
     ) {
         this.enrollmentRepository = enrollmentRepository;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
         this.userMapper = userMapper;
+        this.courseMapper = courseMapper;
     }
 
     public List<StudentResponse> listStudents(Integer courseId) {
@@ -57,6 +62,18 @@ public class EnrollmentService {
             .map(Enrollment::getUser)
             .toList();
         return userMapper.toStudentResponseList(students);
+    }
+
+    /**
+     * Cursos em que o aluno autenticado está matriculado. O id vem do token (não do path), então
+     * cada aluno só enxerga as próprias matrículas; um admin, que não se matricula, recebe lista
+     * vazia. Sem checagem de existência do usuário: o token já garante que ele existe.
+     */
+    public List<CourseResponse> listMyCourses(Integer studentId) {
+        List<Course> courses = enrollmentRepository.listByStudentWithCourse(studentId).stream()
+            .map(Enrollment::getCourse)
+            .toList();
+        return courseMapper.toResponseList(courses);
     }
 
     @Transactional
