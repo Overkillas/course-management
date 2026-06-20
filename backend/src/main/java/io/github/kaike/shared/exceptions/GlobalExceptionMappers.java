@@ -1,5 +1,7 @@
 package io.github.kaike.shared.exceptions;
 
+import io.quarkus.security.ForbiddenException;
+import io.quarkus.security.UnauthorizedException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
@@ -84,6 +86,30 @@ public class GlobalExceptionMappers {
             uriInfo.getPath()
         );
         return build(Response.Status.UNAUTHORIZED.getStatusCode(), error);
+    }
+
+    /** Requisição sem credenciais válidas em endpoint protegido: 401. */
+    @ServerExceptionMapper
+    public Response handleUnauthorized(UnauthorizedException ex, UriInfo uriInfo) {
+        ApiError error = ApiError.of(
+            Response.Status.UNAUTHORIZED.getStatusCode(),
+            Response.Status.UNAUTHORIZED.getReasonPhrase(),
+            "Autenticação necessária",
+            uriInfo.getPath()
+        );
+        return build(Response.Status.UNAUTHORIZED.getStatusCode(), error);
+    }
+
+    /** Autenticado mas sem permissão (papel insuficiente): 403. */
+    @ServerExceptionMapper
+    public Response handleForbidden(ForbiddenException ex, UriInfo uriInfo) {
+        ApiError error = ApiError.of(
+            Response.Status.FORBIDDEN.getStatusCode(),
+            Response.Status.FORBIDDEN.getReasonPhrase(),
+            "Acesso negado",
+            uriInfo.getPath()
+        );
+        return build(Response.Status.FORBIDDEN.getStatusCode(), error);
     }
 
     /** Exceções do próprio JAX-RS (rota inexistente, método não suportado, etc.). */

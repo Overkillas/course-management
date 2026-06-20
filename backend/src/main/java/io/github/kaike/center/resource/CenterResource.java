@@ -2,6 +2,7 @@ package io.github.kaike.center.resource;
 
 import io.github.kaike.center.dtos.CenterResponse;
 import io.github.kaike.center.service.CenterService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -18,6 +19,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @Path("/centers")
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Centros", description = "Dados de referência dos centros acadêmicos")
+@RolesAllowed("admin")
 public class CenterResource {
 
     private final CenterService service;

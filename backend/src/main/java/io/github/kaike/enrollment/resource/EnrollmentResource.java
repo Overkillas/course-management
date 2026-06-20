@@ -4,6 +4,7 @@ import io.github.kaike.enrollment.dtos.CreateEnrollmentRequest;
 import io.github.kaike.enrollment.dtos.EnrollmentResponse;
 import io.github.kaike.enrollment.service.EnrollmentService;
 import io.github.kaike.user.dtos.StudentResponse;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -33,6 +34,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Matrículas", description = "Matrícula de alunos em cursos e listagem por curso")
+@RolesAllowed("admin")
 public class EnrollmentResource {
 
     private final EnrollmentService service;

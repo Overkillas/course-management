@@ -3,6 +3,7 @@ package io.github.kaike.user.resource;
 import io.github.kaike.user.dtos.CreateStudentRequest;
 import io.github.kaike.user.dtos.StudentResponse;
 import io.github.kaike.user.service.StudentService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
@@ -27,6 +28,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Alunos", description = "Cadastro, listagem e exclusão de alunos")
+@RolesAllowed("admin")
 public class StudentResource {
 
     private final StudentService service;
