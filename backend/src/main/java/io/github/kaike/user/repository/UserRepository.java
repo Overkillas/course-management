@@ -6,6 +6,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Acesso a dados de {@link User}. Padrão Repository (decisões 2.2). PK Integer.
@@ -15,6 +16,10 @@ public class UserRepository implements PanacheRepositoryBase<User, Integer> {
 
     public boolean emailExists(String email) {
         return count("email", email) > 0;
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return find("email", email).firstResultOptional();
     }
 
     public List<User> listByRole(UserRole role) {

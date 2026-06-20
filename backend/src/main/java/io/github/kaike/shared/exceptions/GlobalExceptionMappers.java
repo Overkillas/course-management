@@ -74,6 +74,18 @@ public class GlobalExceptionMappers {
         return build(Response.Status.CONFLICT.getStatusCode(), error);
     }
 
+    /** Falha de autenticação (credenciais inválidas): 401, com mensagem genérica. */
+    @ServerExceptionMapper
+    public Response handleAuthentication(AuthenticationException ex, UriInfo uriInfo) {
+        ApiError error = ApiError.of(
+            Response.Status.UNAUTHORIZED.getStatusCode(),
+            Response.Status.UNAUTHORIZED.getReasonPhrase(),
+            ex.getMessage(),
+            uriInfo.getPath()
+        );
+        return build(Response.Status.UNAUTHORIZED.getStatusCode(), error);
+    }
+
     /** Exceções do próprio JAX-RS (rota inexistente, método não suportado, etc.). */
     @ServerExceptionMapper
     public Response handleWebApplication(WebApplicationException ex, UriInfo uriInfo) {
