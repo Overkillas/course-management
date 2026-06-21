@@ -4,6 +4,7 @@ import io.github.kaike.shared.exceptions.ConflictException;
 import io.github.kaike.shared.exceptions.ResourceNotFoundException;
 import io.github.kaike.user.domain.User;
 import io.github.kaike.user.domain.UserRole;
+import io.github.kaike.user.dtos.ChangePasswordRequest;
 import io.github.kaike.user.dtos.CreateStudentRequest;
 import io.github.kaike.user.dtos.StudentResponse;
 import io.github.kaike.user.dtos.UserResponse;
@@ -87,5 +88,19 @@ public class UserService {
         User user = userRepository.findByIdOptional(userId)
             .orElseThrow(() -> new ResourceNotFoundException("Usuário " + userId + " não encontrado"));
         return mapper.toUserResponse(user);
+    }
+
+    /**
+     * Troca a senha do próprio usuário e zera a marca de troca obrigatória. A nova senha já chega
+     * validada como forte pelo Bean Validation. A entidade é gerenciada, então o UPDATE sai no
+     * commit da transação.
+     */
+    @Transactional
+    public void changePassword(Integer userId, ChangePasswordRequest request) {
+        User user = userRepository.findByIdOptional(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuário " + userId + " não encontrado"));
+
+        user.setPasswordHash(passwordEncoder.hash(request.newPassword()));
+        user.setMustChangePassword(false);
     }
 }

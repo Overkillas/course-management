@@ -112,6 +112,18 @@ public class GlobalExceptionMappers {
         return build(Response.Status.FORBIDDEN.getStatusCode(), error);
     }
 
+    /** Usuário com troca de senha pendente acessando outro endpoint: 403 com orientação. */
+    @ServerExceptionMapper
+    public Response handlePasswordChangeRequired(PasswordChangeRequiredException ex, UriInfo uriInfo) {
+        ApiError error = ApiError.of(
+            Response.Status.FORBIDDEN.getStatusCode(),
+            Response.Status.FORBIDDEN.getReasonPhrase(),
+            ex.getMessage(),
+            uriInfo.getPath()
+        );
+        return build(Response.Status.FORBIDDEN.getStatusCode(), error);
+    }
+
     /** Exceções do próprio JAX-RS (rota inexistente, método não suportado, etc.). */
     @ServerExceptionMapper
     public Response handleWebApplication(WebApplicationException ex, UriInfo uriInfo) {
