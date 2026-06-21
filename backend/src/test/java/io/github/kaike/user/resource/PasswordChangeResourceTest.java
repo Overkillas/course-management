@@ -62,6 +62,19 @@ class PasswordChangeResourceTest {
         deleteStudent(adminToken, studentId);
     }
 
+    @Test
+    void newPasswordWithoutSpecialCharReturns400() {
+        String adminToken = login("admin@unifor.br", "Ab!12345");
+        int studentId = createStudent(adminToken, "semespecial@edu.unifor.br");
+        String studentToken = login("semespecial@edu.unifor.br", "senhaInicial123");
+
+        // 8+ caracteres, com letra e dígito, mas sem caractere especial (deve falhar por isso)
+        changePassword(studentToken, "abcdefgh1")
+            .then().statusCode(400).body("violations.field", hasItem("newPassword"));
+
+        deleteStudent(adminToken, studentId);
+    }
+
     // --- helpers ---
 
     private Response changePassword(String token, String newPassword) {
