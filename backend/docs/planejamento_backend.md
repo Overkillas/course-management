@@ -192,7 +192,7 @@ menor retorno relativo para o que o desafio avalia, ela é a de menor prioridade
 adotar HS256 simétrico (um segredo único), por parecer mais simples num monólito,
 mas na prática o tooling do Quarkus/SmallRye é orientado a RSA e tornou o caminho
 simétrico custoso e frágil (o resolver insistia em tratar o segredo como chave
-PEM, e o par de chaves auto-gerado de dev/test sobrescrevia a nossa chave). O
+PEM, e o par de chaves auto-gerado de dev/test sobrescrevia a chave). O
 assimétrico, com chaves em PEM, é o caminho nativo e robusto; fica como aprendizado
 registrado. As chaves são um par de demo versionado em resources (em produção,
 troque por um par real ou injetado); a duração do token e as credenciais do
