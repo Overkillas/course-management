@@ -17,6 +17,7 @@ describe('CourseList', () => {
     name: 'Ciência da Computação',
     totalSemesters: 8,
     center: { id: 1, code: 'CCT' },
+    studentCount: 3,
   };
 
   beforeEach(async () => {

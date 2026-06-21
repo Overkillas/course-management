@@ -19,7 +19,7 @@ export class MyCourses {
   readonly courses = signal<Course[]>([]);
   readonly loading = signal(true);
   readonly error = signal(false);
-  readonly displayedColumns = ['name', 'center', 'totalSemesters'];
+  readonly displayedColumns = ['name', 'center', 'totalSemesters', 'students'];
 
   constructor() {
     this.service.myCourses().subscribe({

@@ -29,7 +29,7 @@ export class CourseList {
   readonly courses = signal<Course[]>([]);
   readonly loading = signal(true);
   readonly error = signal(false);
-  readonly displayedColumns = ['name', 'center', 'totalSemesters', 'actions'];
+  readonly displayedColumns = ['name', 'center', 'totalSemesters', 'students', 'actions'];
 
   constructor() {
     this.load();
