@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { Course } from './course.models';
 import { CourseFormDialog } from './course-form-dialog/course-form-dialog';
@@ -16,7 +17,7 @@ import { CourseService } from './course.service';
  */
 @Component({
   selector: 'app-course-list',
-  imports: [MatTableModule, MatProgressBarModule, MatButtonModule, MatIconModule],
+  imports: [RouterLink, MatTableModule, MatProgressBarModule, MatButtonModule, MatIconModule],
   templateUrl: './course-list.html',
   styleUrl: './course-list.scss',
 })

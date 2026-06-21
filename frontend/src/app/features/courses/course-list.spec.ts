@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Course } from './course.models';
 import { CourseService } from './course.service';
@@ -30,6 +31,7 @@ describe('CourseList', () => {
     await TestBed.configureTestingModule({
       imports: [CourseList],
       providers: [
+        provideRouter([]),
         { provide: CourseService, useValue: serviceMock },
         { provide: MatDialog, useValue: dialogMock },
         { provide: MatSnackBar, useValue: snackMock },

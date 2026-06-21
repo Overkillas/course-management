@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Matricular aluno</h2>
+
+@if (submitting()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="enroll-field">
+    <mat-label>Aluno</mat-label>
+    <input
+      matInput
+      [formControl]="control"
+      [matAutocomplete]="auto"
+      placeholder="Buscar por nome"
+    />
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayStudent">
+      @for (student of filtered(); track student.id) {
+        <mat-option [value]="student">{{ student.name }} ({{ student.email }})</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  @if (available().length === 0) {
+    <p>Não há alunos disponíveis para matricular neste curso.</p>
+  }
+
+  @if (errorMessage()) {
+    <p class="enroll-error">{{ errorMessage() }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [disabled]="submitting()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="submitting()">
+    Matricular
+  </button>
+</mat-dialog-actions>
