@@ -1,0 +1,29 @@
+.shell-title {
+  font-weight: 500;
+}
+
+.shell-nav {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 1.5rem;
+}
+
+.shell-spacer {
+  flex: 1 1 auto;
+}
+
+.shell-email {
+  margin-right: 1rem;
+  opacity: 0.9;
+  font-size: 0.875rem;
+}
+
+.shell-content {
+  padding: 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.shell-link-active {
+  font-weight: 700;
+}

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './core/auth/admin.guard';
 import { authGuard } from './core/auth/auth.guard';
 import { mustChangePasswordGuard } from './core/auth/must-change-password.guard';
 
@@ -13,10 +14,21 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/change-password/change-password').then((m) => m.ChangePassword),
   },
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
-  // Rota catch-all temporária: telas ainda não construídas caem aqui, protegidas pelo
-  // authGuard e pela trava de primeiro acesso. Será removida conforme cada feature
-  // (students, me/courses) for implementada.
+  {
+    path: '',
+    canActivate: [authGuard, mustChangePasswordGuard],
+    loadComponent: () => import('./layout/shell').then((m) => m.Shell),
+    children: [
+      {
+        path: 'students',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/students/student-list').then((m) => m.StudentList),
+      },
+      { path: '', pathMatch: 'full', redirectTo: 'students' },
+    ],
+  },
+  // Rota catch-all temporária: rotas ainda não construídas (ex.: /me/courses) caem
+  // aqui. Vai sumindo conforme as telas do aluno chegam (Etapa 4).
   {
     path: '**',
     canActivate: [authGuard, mustChangePasswordGuard],

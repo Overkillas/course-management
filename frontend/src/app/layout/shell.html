@@ -1,0 +1,21 @@
+<mat-toolbar color="primary">
+  <span class="shell-title">Course Management</span>
+
+  <nav class="shell-nav">
+    @if (isAdmin) {
+      <a mat-button routerLink="/students" routerLinkActive="shell-link-active">Alunos</a>
+      <a mat-button routerLink="/courses" routerLinkActive="shell-link-active">Cursos</a>
+    }
+  </nav>
+
+  <span class="shell-spacer"></span>
+
+  @if (email) {
+    <span class="shell-email">{{ email }}</span>
+  }
+  <button mat-button (click)="logout()">Sair</button>
+</mat-toolbar>
+
+<main class="shell-content">
+  <router-outlet />
+</main>
