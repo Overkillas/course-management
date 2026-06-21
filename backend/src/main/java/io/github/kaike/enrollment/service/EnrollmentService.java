@@ -70,10 +70,9 @@ public class EnrollmentService {
      * vazia. Sem checagem de existência do usuário: o token já garante que ele existe.
      */
     public List<CourseResponse> listMyCourses(Integer studentId) {
-        List<Course> courses = enrollmentRepository.listByStudentWithCourse(studentId).stream()
-            .map(Enrollment::getCourse)
+        return enrollmentRepository.listEnrolledCoursesWithStudentCount(studentId).stream()
+            .map(row -> courseMapper.toResponse(row.course(), row.studentCount()))
             .toList();
-        return courseMapper.toResponseList(courses);
     }
 
     @Transactional

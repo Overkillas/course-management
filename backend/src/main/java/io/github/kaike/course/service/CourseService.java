@@ -16,7 +16,8 @@ import java.util.List;
 
 /**
  * Regra de negócio do curso: cadastrar, listar e excluir. A criação valida que o centro
- * referenciado existe antes de persistir.
+ * referenciado existe antes de persistir. A listagem traz, em cada curso, a quantidade de alunos
+ * matriculados (no cadastro a contagem é sempre 0, por ser um curso novo).
  */
 @ApplicationScoped
 public class CourseService {
@@ -37,7 +38,9 @@ public class CourseService {
     }
 
     public List<CourseResponse> listAll() {
-        return mapper.toResponseList(courseRepository.listAllWithCenter());
+        return courseRepository.listAllWithStudentCount().stream()
+            .map(row -> mapper.toResponse(row.course(), row.studentCount()))
+            .toList();
     }
 
     @Transactional
@@ -48,7 +51,7 @@ public class CourseService {
 
         Course course = mapper.toEntity(request, center);
         courseRepository.persist(course);
-        return mapper.toResponse(course);
+        return mapper.toResponse(course, 0);
     }
 
     @Transactional
