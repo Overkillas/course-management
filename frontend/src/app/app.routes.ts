@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
+import { mustChangePasswordGuard } from './core/auth/must-change-password.guard';
 
 export const routes: Routes = [
   {
@@ -14,11 +15,11 @@ export const routes: Routes = [
   },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   // Rota catch-all temporária: telas ainda não construídas caem aqui, protegidas pelo
-  // authGuard. Será removida conforme cada feature (students, me/courses,
-  // change-password) for implementada.
+  // authGuard e pela trava de primeiro acesso. Será removida conforme cada feature
+  // (students, me/courses) for implementada.
   {
     path: '**',
-    canActivate: [authGuard],
+    canActivate: [authGuard, mustChangePasswordGuard],
     loadComponent: () =>
       import('./features/under-construction/under-construction').then((m) => m.UnderConstruction),
   },
