@@ -52,7 +52,8 @@ class MyCoursesResourceTest {
             .then()
                 .statusCode(200)
                 .body("size()", is(1))
-                .body("[0].id", is(courseId));
+                .body("[0].id", is(courseId))
+                .body("[0].studentCount", is(1));
 
         deleteStudent(adminToken, studentId);
         deleteCourse(adminToken, courseId);

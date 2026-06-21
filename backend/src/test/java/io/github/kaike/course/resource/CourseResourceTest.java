@@ -128,4 +128,47 @@ class CourseResourceTest {
             .then()
                 .statusCode(404);
     }
+
+    @Test
+    void listIncludesStudentCountPerCourse() {
+        int courseId =
+            given()
+                .contentType("application/json")
+                .body("""
+                    { "name": "Curso Contagem", "centerId": 1, "totalSemesters": 8 }
+                    """)
+            .when().post("/courses")
+            .then()
+                .statusCode(201)
+                .body("studentCount", is(0))
+                .extract().path("id");
+
+        // sem matrícula, a lista mostra 0
+        given().when().get("/courses")
+            .then().statusCode(200)
+            .body("find { it.id == " + courseId + " }.studentCount", is(0));
+
+        int studentId =
+            given()
+                .contentType("application/json")
+                .body("""
+                    { "name": "Aluno Contagem", "email": "contagem@edu.unifor.br", "password": "senhaInicial123" }
+                    """)
+            .when().post("/students")
+            .then().statusCode(201).extract().path("id");
+
+        given()
+            .contentType("application/json")
+            .body("{ \"studentId\": " + studentId + " }")
+        .when().post("/courses/" + courseId + "/students")
+        .then().statusCode(201);
+
+        // com uma matrícula, a lista mostra 1
+        given().when().get("/courses")
+            .then().statusCode(200)
+            .body("find { it.id == " + courseId + " }.studentCount", is(1));
+
+        given().when().delete("/students/" + studentId).then().statusCode(204);
+        given().when().delete("/courses/" + courseId).then().statusCode(204);
+    }
 }
