@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Novo aluno</h2>
+
+@if (submitting()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="student-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Informe o nome.</mat-error>
+      } @else if (form.controls.name.hasError('maxlength')) {
+        <mat-error>No máximo 100 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput type="email" formControlName="email" />
+      @if (form.controls.email.hasError('required')) {
+        <mat-error>Informe o e-mail.</mat-error>
+      } @else if (form.controls.email.hasError('email')) {
+        <mat-error>E-mail inválido.</mat-error>
+      } @else if (form.controls.email.hasError('maxlength')) {
+        <mat-error>No máximo 255 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Senha inicial</mat-label>
+      <input matInput type="password" formControlName="password" autocomplete="new-password" />
+      <mat-hint>Temporária; o aluno troca no primeiro acesso.</mat-hint>
+      @if (form.controls.password.hasError('required')) {
+        <mat-error>Informe a senha inicial.</mat-error>
+      } @else if (form.controls.password.hasError('minlength') || form.controls.password.hasError('maxlength')) {
+        <mat-error>Entre 8 e 72 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="student-form-error">{{ errorMessage() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [disabled]="submitting()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="submitting()">
+    Cadastrar
+  </button>
+</mat-dialog-actions>
