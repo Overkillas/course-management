@@ -3,7 +3,10 @@ package io.github.kaike.enrollment.resource;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
+import io.github.kaike.user.repository.UserRepository;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -13,6 +16,9 @@ import org.junit.jupiter.api.Test;
  */
 @QuarkusTest
 class MyCoursesResourceTest {
+
+    @Inject
+    UserRepository userRepository;
 
     @Test
     void myCoursesWithoutTokenReturns401() {
@@ -28,6 +34,7 @@ class MyCoursesResourceTest {
         int studentId = createStudent(adminToken, "me.courses@edu.unifor.br");
         int courseId = createCourse(adminToken);
 
+        clearMustChangePassword("me.courses@edu.unifor.br");
         String studentToken = login("me.courses@edu.unifor.br", "senhaInicial123");
 
         // sem matrícula: lista vazia
@@ -52,6 +59,17 @@ class MyCoursesResourceTest {
     }
 
     // --- helpers ---
+
+    /**
+     * Zera a flag de troca obrigatória direto no banco, para o aluno ficar utilizável sem passar
+     * pelo endpoint de troca de senha. Este teste é sobre o /me/courses, não sobre a troca de
+     * senha (que tem teste próprio em PasswordChangeResourceTest); montar a pré-condição via
+     * repositório mantém os testes desacoplados.
+     */
+    private void clearMustChangePassword(String email) {
+        QuarkusTransaction.requiringNew().run(() ->
+            userRepository.update("mustChangePassword = false where email = ?1", email));
+    }
 
     private String login(String email, String password) {
         return given()
