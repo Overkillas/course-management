@@ -13,13 +13,13 @@ public record CreateStudentRequest(
 
     @NotBlank
     @Size(max = 100)
-    @Schema(examples = "Maria Silva")
+    @Schema(examples = "Mario")
     String name,
 
     @NotBlank
     @Email
     @Size(max = 255)
-    @Schema(examples = "maria.silva@edu.unifor.br")
+    @Schema(examples = "aluno@edu.unifor.br")
     String email,
 
     @NotBlank
@@ -29,7 +29,7 @@ public record CreateStudentRequest(
      * validação mais garantida não agregaria muito.
      */
     @Size(min = 8, max = 72)
-    @Schema(examples = "senhaInicial123")
+    @Schema(examples = "12345678")
     String password
 ) {
 }

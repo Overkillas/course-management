@@ -79,6 +79,34 @@ class CourseResourceTest {
     }
 
     @Test
+    void createWithNameShorterThanMinReturns400() {
+        given()
+            .contentType("application/json")
+            .body("""
+                { "name": "AB", "centerId": 1, "totalSemesters": 8 }
+                """)
+        .when()
+            .post("/courses")
+        .then()
+            .statusCode(400)
+            .body("violations.field", hasItem("name"));
+    }
+
+    @Test
+    void createWithTotalSemestersAbove100Returns400() {
+        given()
+            .contentType("application/json")
+            .body("""
+                { "name": "Curso Longo", "centerId": 1, "totalSemesters": 101 }
+                """)
+        .when()
+            .post("/courses")
+        .then()
+            .statusCode(400)
+            .body("violations.field", hasItem("totalSemesters"));
+    }
+
+    @Test
     void createWithNonExistentCenterReturns400OnCenterId() {
         given()
             .contentType("application/json")
