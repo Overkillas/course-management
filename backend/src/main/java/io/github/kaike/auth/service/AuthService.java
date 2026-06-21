@@ -15,9 +15,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * Autenticação: valida as credenciais e emite o JWT. O papel vai no claim padrão "groups"
- * (que o @RolesAllowed lê) e o mustChangePassword vai como claim próprio. Assinatura HS256
- * com o segredo da config. Depende de user (UserRepository, PasswordEncoder), numa
- * dependência acíclica auth -> user.
+ * (que o @RolesAllowed lê) e o mustChangePassword vai como claim próprio. Assinatura RS256
+ * (a chave privada da config assina; a pública verifica). Depende de user (UserRepository,
+ * PasswordEncoder), numa dependência acíclica auth -> user.
  */
 @ApplicationScoped
 public class AuthService {
