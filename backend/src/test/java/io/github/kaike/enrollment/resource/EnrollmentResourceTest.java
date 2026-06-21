@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import io.github.kaike.enrollment.repository.EnrollmentRepository;
+import io.github.kaike.user.repository.UserRepository;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.response.Response;
@@ -25,6 +27,9 @@ class EnrollmentResourceTest {
 
     @Inject
     EnrollmentRepository enrollmentRepository;
+
+    @Inject
+    UserRepository userRepository;
 
     @Test
     void enrollReturns201AndStudentAppearsInCourseList() {
@@ -65,6 +70,19 @@ class EnrollmentResourceTest {
         int courseId = createCourse();
 
         enroll(courseId, 999999)
+            .then()
+                .statusCode(400)
+                .body("violations.field", hasItem("studentId"));
+
+        deleteCourse(courseId);
+    }
+
+    @Test
+    void enrollingNonStudentReturns400() {
+        int courseId = createCourse();
+
+        // o admin existe mas não é aluno: requireStudent deve barrar com 400 no studentId
+        enroll(courseId, adminId())
             .then()
                 .statusCode(400)
                 .body("violations.field", hasItem("studentId"));
@@ -155,5 +173,11 @@ class EnrollmentResourceTest {
 
     private void deleteCourse(int id) {
         given().when().delete("/courses/" + id).then().statusCode(204);
+    }
+
+    /** Id do admin semeado (usuário não-aluno), lido direto do repositório. */
+    private int adminId() {
+        return QuarkusTransaction.requiringNew()
+            .call(() -> userRepository.findByEmail("admin@unifor.br").orElseThrow().getId());
     }
 }
