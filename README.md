@@ -1,29 +1,27 @@
 # Course Management
 
-Aplicação web para gerenciamento de cursos e alunos, desenvolvida como desafio
-técnico. O sistema permite ao administrador cadastrar alunos e cursos, matricular
-alunos em cursos e listar os matriculados por curso.
-
-> **Status:** em desenvolvimento ativo. Este README cresce junto com o projeto.
-> Algumas seções estão marcadas como _em construção_ e serão preenchidas
-> conforme cada parte é implementada.
+Aplicação web para gerenciamento de cursos e alunos, desenvolvida como desafio técnico. O
+administrador cadastra alunos e cursos, matricula alunos em cursos e lista os matriculados por
+curso; o aluno autentica, consulta o próprio perfil e as próprias matrículas, e troca a senha no
+primeiro acesso. O **backend** (API REST) está implementado e documentado aqui; o **frontend**
+(Angular) é a próxima etapa.
 
 ---
 
 ## Sobre o projeto
 
-O objetivo é uma aplicação de gestão acadêmica simples, com as seguintes
-operações de negócio centradas na figura do administrador:
+Operações de negócio, centradas na figura do administrador:
 
 - Cadastrar, listar e excluir alunos.
 - Cadastrar, listar e excluir cursos.
 - Matricular alunos em cursos.
 - Listar alunos matriculados por curso.
 
-A prioridade do desenvolvimento é a qualidade e a consistência da solução, com as
-regras de negócio principais implementadas de forma correta e bem estruturada. O
-detalhamento do planejamento, das prioridades e da ordem de implementação está na
-[documentação de planejamento do backend](backend/docs/planejamento_backend.md).
+Sobre essa base há **autenticação por JWT** e **controle de acesso por papel** (admin/aluno),
+com **troca de senha obrigatória no primeiro acesso** do aluno. A prioridade foi a qualidade e a
+consistência do núcleo: regras de negócio corretas, bem estruturadas e cobertas por testes. O
+planejamento, as prioridades e as decisões estão na
+[documentação do backend](backend/docs).
 
 ---
 
@@ -34,12 +32,13 @@ detalhamento do planejamento, das prioridades e da ordem de implementação est�
 - **Linguagem:** Java 17
 - **Framework:** Quarkus
 - **API:** REST com serialização JSON (Jackson)
-- **Persistência:** Hibernate ORM com Panache
+- **Persistência:** Hibernate ORM com Panache (padrão Repository)
 - **Banco de dados:** MySQL
 - **Migrations:** Flyway (schema versionado e dados de referência)
 - **Validação:** Bean Validation (Hibernate Validator)
+- **Autenticação:** JWT via SmallRye JWT (assinatura assimétrica RS256), com controle de acesso por papel
 - **Documentação da API:** OpenAPI / Swagger UI
-- **Autenticação:** JWT _(planejado, ver documentação de planejamento)_
+- **Testes:** JUnit 5 + RestAssured sobre `@QuarkusTest`
 
 ### Frontend
 
@@ -47,15 +46,15 @@ detalhamento do planejamento, das prioridades e da ordem de implementação est�
 
 ### Infraestrutura
 
-- **Containerização:** Docker e Docker Compose
+- **Containerização:** Docker e Docker Compose (aplicação + MySQL)
 
 ---
 
 ## Estrutura do repositório
 
-Este é um **monorepo**: backend e frontend convivem no mesmo repositório, cada um
-em seu próprio diretório e autocontido (código, documentação e configuração
-próprios).
+Este é um **monorepo**: backend e frontend convivem no mesmo repositório, cada um em seu próprio
+diretório e autocontido (código, documentação e configuração próprios). Esta entrega traz o
+**backend** completo; o **frontend** será adicionado em `frontend/`.
 
 ```
 course-management/
@@ -65,40 +64,27 @@ course-management/
 │   │   ├── decisoes_arquiteturais.md    # arquitetura da API (camadas, pacotes)
 │   │   └── planejamento_backend.md      # planejamento, prioridades e decisões
 │   └── src/
-├── frontend/                # aplicação web (Angular), a ser adicionado
+├── frontend/                # aplicação web (Angular) — a ser adicionado
+├── docker-compose.yml       # sobe app + MySQL
+├── .env.example             # template de variáveis de ambiente
 └── README.md                # este arquivo
 ```
 
-A escolha por monorepo se deu pela simplicidade de avaliação e pela aderência ao
-pedido de um único repositório. A co-localização da documentação em cada
-subprojeto mantém cada parte autocontida.
-
----
-
-## Documentação
-
-Documentos de decisão técnica já disponíveis:
-
-- [Modelagem do banco de dados](backend/docs/db_diagram.md): entidades, relações,
-  decisões de integridade e índices.
-- [Decisões arquiteturais da API](backend/docs/decisoes_arquiteturais.md):
-  organização por domínio, camadas, DTOs, mapeamento e tratamento de erros.
-- [Planejamento do backend](backend/docs/planejamento_backend.md): princípios,
-  stack, escopo, abordagem de autenticação, prioridades e ordem de implementação.
+A co-localização da documentação em cada subprojeto mantém cada parte autocontida.
 
 ---
 
 ## Como executar
 
-A forma recomendada de subir o sistema é via **Docker Compose**: um comando sobe o
-backend e o MySQL já conectados, com as migrations e os centros de referência
-aplicados automaticamente no primeiro boot.
+A forma recomendada de subir o backend é via **Docker Compose**: um comando sobe a aplicação e o
+MySQL já conectados, com as migrations e os centros de referência aplicados automaticamente no
+primeiro boot.
 
 ### Pré-requisitos
 
 - **Docker** e **Docker Compose** (caminho recomendado).
-- Para rodar o backend isolado em modo de desenvolvimento: **JDK 17+** (o Maven vem
-  pelo wrapper `./mvnw`, não precisa instalar à parte).
+- Para rodar o backend isolado em modo de desenvolvimento: **JDK 17+** (o Maven vem pelo wrapper
+  `./mvnw`, não precisa instalar à parte).
 
 ### Subindo com Docker Compose (recomendado)
 
@@ -118,60 +104,93 @@ aplicados automaticamente no primeiro boot.
    docker compose up --build
    ```
 
-Os endpoints ficam disponíveis em `http://localhost:8080` (ou na porta `APP_PORT`
-definida no `.env`):
+Os endpoints ficam disponíveis em `http://localhost:8080` (ou na porta `APP_PORT` definida no
+`.env`):
 
 - **API:** `http://localhost:8080`
 - **Documentação interativa (Swagger UI):** `http://localhost:8080/q/docs`
 - **Health check:** `http://localhost:8080/q/health`
 
-Para derrubar: `docker compose down` (ou `docker compose down -v` para apagar
-também os dados do banco).
+Para derrubar: `docker compose down` (ou `docker compose down -v` para apagar também os dados do
+banco).
+
+O **administrador inicial** é semeado no primeiro boot a partir do `.env` (valores de demo:
+`admin@unifor.br` / `Ab!12345`).
 
 ### Backend em modo de desenvolvimento
 
-Dentro de `backend/`, com o Docker em execução (o Quarkus sobe um MySQL efêmero
-sozinho via Dev Services, sem configuração manual de conexão):
+Dentro de `backend/`, com o Docker em execução (o Quarkus sobe um MySQL efêmero sozinho via Dev
+Services, sem configuração manual de conexão):
 
 ```bash
 ./mvnw quarkus:dev
 ```
 
-Live reload ativo e Swagger em `/q/docs`. Para rodar a suíte de testes:
-
-```bash
-./mvnw test
-```
+Live reload ativo e Swagger em `/q/docs`.
 
 ---
 
 ## API
 
-> _Em construção._ A documentação dos endpoints será disponibilizada via OpenAPI /
-> Swagger UI quando o backend estiver em execução, e esta seção trará o endereço de
-> acesso e um resumo dos principais recursos.
+A documentação interativa completa fica no **Swagger UI** (`/q/docs`) com a aplicação no ar.
+Visão geral dos recursos:
+
+| Método      | Rota                       | Acesso       | Descrição                                         |
+|-------------|----------------------------|--------------|---------------------------------------------------|
+| `POST`      | `/auth/login`              | público      | Autentica e retorna o token JWT                   |
+| `GET POST`  | `/students`                | admin        | Lista / cadastra alunos                           |
+| `DELETE`    | `/students/{id}`           | admin        | Exclui um aluno                                   |
+| `GET POST`  | `/courses`                 | admin        | Lista / cadastra cursos                           |
+| `DELETE`    | `/courses/{id}`            | admin        | Exclui um curso                                   |
+| `GET`       | `/centers`                 | admin        | Lista os centros (dado de referência)             |
+| `GET POST`  | `/courses/{id}/students`   | admin        | Lista matriculados / matricula um aluno no curso  |
+| `GET`       | `/me`                      | autenticado  | Perfil do próprio usuário                         |
+| `GET`       | `/me/courses`              | autenticado  | Cursos em que o aluno está matriculado            |
+| `POST`      | `/me/password`             | autenticado  | Troca a própria senha (obrigatória no 1º acesso)  |
+
+Os erros seguem um formato único (`ApiError`: `timestamp`, `status`, `message`, `path` e, em
+validações, a lista de campos inválidos).
 
 ---
 
 ## Autenticação e autorização
 
-> _Em construção._ A abordagem planejada (autenticação por JWT, controle de acesso
-> por papel e demais camadas) está descrita na
-> [documentação de planejamento](backend/docs/planejamento_backend.md). Esta seção
-> trará os detalhes de uso conforme a implementação avançar.
+- **Login.** `POST /auth/login` com e-mail e senha retorna um **JWT** (assinatura assimétrica
+  RS256). O token carrega o papel do usuário e a flag de troca de senha.
+- **Papéis.** `admin` (gestão de alunos, cursos e matrículas) e `aluno` (self-service: perfil,
+  próprias matrículas e troca de senha). A autorização é declarativa, via `@RolesAllowed`.
+- **Primeiro acesso.** O aluno é criado com uma senha temporária definida pelo admin e a flag
+  `must_change_password`. Enquanto não trocar a senha (`POST /me/password` — mínimo 8 caracteres,
+  com letra, dígito e caractere especial), fica bloqueado nos demais endpoints. Depois de trocar,
+  refaz o login e passa a operar normalmente.
+
+As escolhas (inclusive por que migrei de HS256 para RS256) estão em
+[planejamento_backend.md](backend/docs/planejamento_backend.md) §5.
 
 ---
 
 ## Testes
 
-> _Em construção._ A estratégia de testes prioriza a cobertura das regras de
-> negócio principais. Detalhes de como executar a suíte serão adicionados aqui.
+```bash
+cd backend
+./mvnw test
+```
+
+São **33 testes de integração** (JUnit 5 + RestAssured sobre `@QuarkusTest`, com um MySQL efêmero
+via Dev Services), priorizando valor sobre quantidade: unicidade de matrícula, exclusão em
+cascata, autorização por papel, troca de senha no primeiro acesso e validações de entrada. A
+estratégia está em [planejamento_backend.md](backend/docs/planejamento_backend.md) §8.
 
 ---
 
-## Decisões técnicas e suposições
+## Decisões técnicas e documentação
 
-As principais decisões de arquitetura, os trade-offs considerados e as suposições
-adotadas estão documentados em detalhe nos arquivos da pasta `backend/docs`. Um
-resumo das decisões mais relevantes será consolidado nesta seção ao longo do
-desenvolvimento.
+As decisões de arquitetura, a modelagem e os trade-offs estão documentados em detalhe na pasta
+[`backend/docs`](backend/docs):
+
+- [db_diagram.md](backend/docs/db_diagram.md): modelagem do banco: entidades, relações,
+  integridade e índices.
+- [decisoes_arquiteturais.md](backend/docs/decisoes_arquiteturais.md): organização por domínio,
+  camadas, DTOs, mapeamento e tratamento de erros.
+- [planejamento_backend.md](backend/docs/planejamento_backend.md): princípios, stack, escopo,
+  autenticação, prioridades e ordem de implementação.
