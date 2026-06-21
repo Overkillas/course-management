@@ -101,7 +101,7 @@ ORM dispara 1 consulta da lista mais 1 por associação acessada.
 
 Por isso, as consultas de listagem que precisam de uma associação a materializam num
 único SQL com `JOIN FETCH`, em vez de deixar o lazy disparar consulta por consulta
-(ver `CourseRepository.listAllWithCenter`). No volume deste desafio o ganho é
+(ver `CourseRepository.listAllWithStudentCount`). No volume deste desafio o ganho é
 imperceptível, e o cache de primeiro nível do Hibernate já limita o custo aos
 registros distintos, mas declaro o `JOIN FETCH` deliberadamente para expressar a
 intenção de design e manter a leitura à prova de escala. É o mesmo critério dos
@@ -348,6 +348,15 @@ decisão de superfície HTTP. A lógica e a regra central (um aluno não se matr
 vezes no mesmo curso) continuam no módulo `enrollment`; a resource que serve esse path
 vive em `enrollment`, apenas com o `@Path` course-nested. URL e módulo de domínio são
 camadas independentes.
+
+**A contagem de alunos no `CourseResponse` (`studentCount`).** Toda resposta de curso traz
+quantos alunos estão matriculados (no cadastro é sempre 0, por ser um curso novo). Isso é dado
+derivado da matrícula, então o curso passa a "ler" um agregado de enrollment. Para não inverter a
+dependência (enrollment já depende de course), a consulta referencia a entidade `Enrollment`
+apenas pelo nome dentro do JPQL, num subselect, sem import Java do pacote enrollment, o que mantém
+o grafo de dependências acíclico. É uma evolução pontual da junção livre: a matrícula segue sem
+back-reference nas pontas, mas o curso expõe uma contagem derivada dela. O `/me/courses`, que
+também devolve `CourseResponse`, traz a mesma contagem.
 
 ---
 
