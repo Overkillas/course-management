@@ -1,0 +1,15 @@
+.courses-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+}
+
+.courses-error {
+  color: var(--mat-sys-error);
+}

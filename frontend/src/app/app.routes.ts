@@ -24,6 +24,11 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () => import('./features/students/student-list').then((m) => m.StudentList),
       },
+      {
+        path: 'courses',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./features/courses/course-list').then((m) => m.CourseList),
+      },
       { path: '', pathMatch: 'full', redirectTo: 'students' },
     ],
   },

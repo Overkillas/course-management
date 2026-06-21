@@ -1,0 +1,11 @@
+.course-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 320px;
+}
+
+.course-form-error {
+  color: var(--mat-sys-error);
+  margin: 0;
+}

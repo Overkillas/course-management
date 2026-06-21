@@ -1,0 +1,56 @@
+<h2 mat-dialog-title>Novo curso</h2>
+
+@if (submitting()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="course-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Informe o nome.</mat-error>
+      } @else if (form.controls.name.hasError('minlength')) {
+        <mat-error>Mínimo de 3 caracteres.</mat-error>
+      } @else if (form.controls.name.hasError('maxlength')) {
+        <mat-error>No máximo 100 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Centro</mat-label>
+      <mat-select formControlName="centerId">
+        @for (center of centers(); track center.id) {
+          <mat-option [value]="center.id">{{ center.code }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.centerId.hasError('required')) {
+        <mat-error>Selecione o centro.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Semestres</mat-label>
+      <input matInput type="number" formControlName="totalSemesters" min="1" />
+      @if (form.controls.totalSemesters.hasError('required')) {
+        <mat-error>Informe o número de semestres.</mat-error>
+      } @else if (form.controls.totalSemesters.hasError('min')) {
+        <mat-error>Deve ser maior que zero.</mat-error>
+      } @else if (form.controls.totalSemesters.hasError('max')) {
+        <mat-error>No máximo 100 semestres.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="course-form-error">{{ errorMessage() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [disabled]="submitting()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="submitting()">
+    Cadastrar
+  </button>
+</mat-dialog-actions>
