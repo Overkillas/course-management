@@ -328,6 +328,15 @@ sem o ruído de obter um token a cada chamada. A autorização em si (401 sem to
 403 com papel errado, 200 com admin) fica num teste dedicado com tokens reais, que
 exercita o caminho completo do JWT (verificação e papel).
 
+**Pré-condições montadas direto, não encadeadas.** Quando um teste precisa de um
+estado que outra feature produz (por exemplo, um aluno sem a trava de primeiro
+acesso, para exercitar o `/me`), ele monta esse estado direto via repositório, em
+vez de chamar o endpoint daquela outra feature. Assim o teste fica acoplado só à
+regra que ele prova: a troca de senha é exercitada no seu próprio teste, e um
+defeito nela não derruba os testes do `/me`, que não são sobre troca de senha.
+Injetar o repositório no teste para preparar ou inspecionar estado é a mesma
+técnica usada para verificar a exclusão em cascata da matrícula.
+
 ---
 
 ## 9. Suposições assumidas
