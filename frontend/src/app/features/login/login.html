@@ -1,15 +1,16 @@
 <div class="login-page">
   <mat-card class="login-card">
-    <mat-card-header>
-      <mat-card-title>Course Management</mat-card-title>
-      <mat-card-subtitle>Entre com suas credenciais</mat-card-subtitle>
-    </mat-card-header>
-
     @if (submitting()) {
       <mat-progress-bar mode="indeterminate" />
     }
 
     <mat-card-content>
+      <div class="login-brand">
+        <mat-icon class="login-brand-icon">school</mat-icon>
+        <h1 class="login-brand-title">Course Management</h1>
+        <p class="login-brand-subtitle">Entre com suas credenciais</p>
+      </div>
+
       <form [formGroup]="form" (ngSubmit)="submit()">
         <mat-form-field appearance="outline">
           <mat-label>E-mail</mat-label>

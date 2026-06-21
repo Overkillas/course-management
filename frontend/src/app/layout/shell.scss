@@ -1,3 +1,7 @@
+.shell-logo {
+  margin-right: 0.5rem;
+}
+
 .shell-title {
   font-weight: 500;
 }
@@ -13,13 +17,22 @@
 }
 
 .shell-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   margin-right: 1rem;
   opacity: 0.9;
   font-size: 0.875rem;
 }
 
+.shell-email-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
 .shell-content {
-  padding: 1.5rem;
+  padding: 2rem 1.5rem;
   max-width: 960px;
   margin: 0 auto;
 }

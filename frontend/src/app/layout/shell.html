@@ -1,4 +1,5 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="shell-toolbar">
+  <mat-icon class="shell-logo">school</mat-icon>
   <span class="shell-title">Course Management</span>
 
   <nav class="shell-nav">
@@ -20,9 +21,15 @@
   <span class="shell-spacer"></span>
 
   @if (email) {
-    <span class="shell-email">{{ email }}</span>
+    <span class="shell-email">
+      <mat-icon class="shell-email-icon">account_circle</mat-icon>
+      {{ email }}
+    </span>
   }
-  <button mat-button (click)="logout()">Sair</button>
+  <button mat-button (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    Sair
+  </button>
 </mat-toolbar>
 
 <main class="shell-content">
