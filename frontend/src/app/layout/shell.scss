@@ -12,23 +12,43 @@
   margin-left: 1.5rem;
 }
 
+.shell-nav a mat-icon {
+  margin-right: 0.35rem;
+}
+
 .shell-spacer {
   flex: 1 1 auto;
 }
 
-.shell-email {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-right: 1rem;
-  opacity: 0.9;
-  font-size: 0.875rem;
+/* Botão de conta na toolbar: ícone + nome + setinha. */
+.shell-user-button-name {
+  margin: 0 0.25rem;
 }
 
-.shell-email-icon {
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
+.shell-user-caret {
+  margin-left: -0.25rem;
+}
+
+/* Bloco de dados do usuário no topo do menu de conta. */
+.shell-user-info {
+  padding: 0.75rem 1rem;
+  min-width: 200px;
+}
+
+.shell-user-email {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+}
+
+.shell-user-role {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+  font-size: 0.75rem;
 }
 
 .shell-content {

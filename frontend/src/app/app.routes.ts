@@ -36,10 +36,6 @@ export const routes: Routes = [
           import('./features/enrollments/course-students').then((m) => m.CourseStudents),
       },
       {
-        path: 'me',
-        loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
-      },
-      {
         path: 'me/courses',
         loadComponent: () => import('./features/my-courses/my-courses').then((m) => m.MyCourses),
       },

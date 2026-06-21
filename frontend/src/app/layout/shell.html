@@ -4,32 +4,46 @@
 
   <nav class="shell-nav">
     @if (isAdmin) {
-      <a mat-button routerLink="/students" routerLinkActive="shell-link-active">Alunos</a>
-      <a mat-button routerLink="/courses" routerLinkActive="shell-link-active">Cursos</a>
+      <a mat-button routerLink="/students" routerLinkActive="shell-link-active">
+        <mat-icon>group</mat-icon>
+        Alunos
+      </a>
+      <a mat-button routerLink="/courses" routerLinkActive="shell-link-active">
+        <mat-icon>menu_book</mat-icon>
+        Cursos
+      </a>
     } @else {
-      <a mat-button routerLink="/me/courses" routerLinkActive="shell-link-active">Meus cursos</a>
-      <a
-        mat-button
-        routerLink="/me"
-        routerLinkActive="shell-link-active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        >Meu perfil</a
-      >
+      <a mat-button routerLink="/me/courses" routerLinkActive="shell-link-active">
+        <mat-icon>menu_book</mat-icon>
+        Meus cursos
+      </a>
     }
   </nav>
 
   <span class="shell-spacer"></span>
 
-  @if (email) {
-    <span class="shell-email">
-      <mat-icon class="shell-email-icon">account_circle</mat-icon>
-      {{ email }}
-    </span>
-  }
-  <button mat-button (click)="logout()">
-    <mat-icon>logout</mat-icon>
-    Sair
+  <button mat-button [matMenuTriggerFor]="userMenu" class="shell-user-button" aria-label="Conta do usuário">
+    <mat-icon>account_circle</mat-icon>
+    @if (userName()) {
+      <span class="shell-user-button-name">{{ userName() }}</span>
+    }
+    <mat-icon class="shell-user-caret">arrow_drop_down</mat-icon>
   </button>
+  <mat-menu #userMenu="matMenu">
+    <div class="shell-user-info">
+      @if (email) {
+        <p class="shell-user-email">{{ email }}</p>
+      }
+      @if (roleLabel) {
+        <span class="shell-user-role">{{ roleLabel }}</span>
+      }
+    </div>
+    <mat-divider />
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Sair</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>
 
 <main class="shell-content">
