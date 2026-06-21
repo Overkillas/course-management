@@ -35,15 +35,18 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/enrollments/course-students').then((m) => m.CourseStudents),
       },
+      {
+        path: 'me',
+        loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
+      },
+      {
+        path: 'me/courses',
+        loadComponent: () => import('./features/my-courses/my-courses').then((m) => m.MyCourses),
+      },
       { path: '', pathMatch: 'full', redirectTo: 'students' },
     ],
   },
-  // Rota catch-all temporária: rotas ainda não construídas (ex.: /me/courses) caem
-  // aqui. Vai sumindo conforme as telas do aluno chegam (Etapa 4).
-  {
-    path: '**',
-    canActivate: [authGuard, mustChangePasswordGuard],
-    loadComponent: () =>
-      import('./features/under-construction/under-construction').then((m) => m.UnderConstruction),
-  },
+  // Rota desconhecida cai no shell, que pelo guard manda para o login ou para o
+  // destino conforme o papel.
+  { path: '**', redirectTo: '' },
 ];

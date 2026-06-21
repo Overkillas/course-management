@@ -5,6 +5,15 @@
     @if (isAdmin) {
       <a mat-button routerLink="/students" routerLinkActive="shell-link-active">Alunos</a>
       <a mat-button routerLink="/courses" routerLinkActive="shell-link-active">Cursos</a>
+    } @else {
+      <a mat-button routerLink="/me/courses" routerLinkActive="shell-link-active">Meus cursos</a>
+      <a
+        mat-button
+        routerLink="/me"
+        routerLinkActive="shell-link-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >Meu perfil</a
+      >
     }
   </nav>
 
