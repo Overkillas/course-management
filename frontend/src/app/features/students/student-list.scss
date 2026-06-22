@@ -1,15 +1,1 @@
-.students-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-table {
-  width: 100%;
-}
-
-.students-error {
-  color: var(--mat-sys-error);
-}
+/* A tela usa os utilitários globais (.page-header, .empty-state, .error-text) de styles.scss. */

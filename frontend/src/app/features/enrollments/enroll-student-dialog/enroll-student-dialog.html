@@ -1,11 +1,14 @@
-<h2 mat-dialog-title>Matricular aluno</h2>
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>person_add</mat-icon>
+  Matricular aluno
+</h2>
 
 @if (submitting()) {
   <mat-progress-bar mode="indeterminate" />
 }
 
 <mat-dialog-content>
-  <mat-form-field appearance="outline" class="enroll-field">
+  <mat-form-field appearance="fill" class="enroll-field">
     <mat-label>Aluno</mat-label>
     <input
       matInput

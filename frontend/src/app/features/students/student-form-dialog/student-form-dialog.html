@@ -1,4 +1,7 @@
-<h2 mat-dialog-title>Novo aluno</h2>
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>person_add</mat-icon>
+  Novo aluno
+</h2>
 
 @if (submitting()) {
   <mat-progress-bar mode="indeterminate" />
@@ -6,7 +9,7 @@
 
 <mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="submit()" class="student-form">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Nome</mat-label>
       <input matInput formControlName="name" />
       @if (form.controls.name.hasError('required')) {
@@ -16,7 +19,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>E-mail</mat-label>
       <input matInput type="email" formControlName="email" />
       @if (form.controls.email.hasError('required')) {
@@ -28,10 +31,10 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Senha inicial</mat-label>
       <input matInput type="password" formControlName="password" autocomplete="new-password" />
-      <mat-hint>Temporária; o aluno troca no primeiro acesso.</mat-hint>
+      <mat-hint>Provisória, usada apenas no primeiro acesso.</mat-hint>
       @if (form.controls.password.hasError('required')) {
         <mat-error>Informe a senha inicial.</mat-error>
       } @else if (form.controls.password.hasError('minlength') || form.controls.password.hasError('maxlength')) {

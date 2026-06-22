@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   NonNullableFormBuilder,
@@ -54,6 +55,8 @@ export class ChangePassword {
 
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly hideNew = signal(true);
+  readonly hideConfirm = signal(true);
 
   readonly form = this.fb.group(
     {
@@ -62,6 +65,26 @@ export class ChangePassword {
     },
     { validators: passwordsMatch },
   );
+
+  // Valor atual da nova senha, espelhado em signal para a checklist de requisitos
+  // reagir conforme o usuário digita.
+  private readonly newPasswordValue = signal('');
+
+  readonly rules = computed(() => {
+    const value = this.newPasswordValue();
+    return {
+      length: value.length >= 8,
+      letter: /[a-zA-Z]/.test(value),
+      digit: /\d/.test(value),
+      special: /[^a-zA-Z0-9]/.test(value),
+    };
+  });
+
+  constructor() {
+    this.form.controls.newPassword.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((value) => this.newPasswordValue.set(value));
+  }
 
   submit(): void {
     if (this.form.invalid) {

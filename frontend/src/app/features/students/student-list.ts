@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -16,7 +17,7 @@ import { StudentService } from './student.service';
  */
 @Component({
   selector: 'app-student-list',
-  imports: [MatTableModule, MatProgressBarModule, MatButtonModule, MatIconModule],
+  imports: [MatTableModule, MatProgressBarModule, MatButtonModule, MatIconModule, MatCardModule],
   templateUrl: './student-list.html',
   styleUrl: './student-list.scss',
 })
@@ -53,6 +54,7 @@ export class StudentList {
           title: 'Excluir aluno',
           message: `Excluir ${student.name}? As matrículas dele também serão removidas.`,
           confirmText: 'Excluir',
+          icon: 'warning',
         },
       })
       .afterClosed()

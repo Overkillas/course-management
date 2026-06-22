@@ -4,6 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
@@ -31,6 +32,7 @@ const MAX_SEMESTERS = 100;
     MatSelectModule,
     MatButtonModule,
     MatProgressBarModule,
+    MatIconModule,
   ],
   templateUrl: './course-form-dialog.html',
   styleUrl: './course-form-dialog.scss',

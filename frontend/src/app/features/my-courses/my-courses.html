@@ -1,40 +1,47 @@
-<h1>Meus cursos</h1>
+<div class="page-header">
+  <h1>Meus cursos</h1>
+</div>
 
 @if (loading()) {
   <mat-progress-bar mode="indeterminate" />
 }
 
 @if (error()) {
-  <p class="my-courses-error">Não foi possível carregar os seus cursos.</p>
+  <p class="error-text">Não foi possível carregar os seus cursos.</p>
 }
 
 @if (!loading() && !error()) {
   @if (courses().length === 0) {
-    <p>Você não está matriculado em nenhum curso.</p>
+    <div class="empty-state">
+      <mat-icon>menu_book</mat-icon>
+      <p>Você não está matriculado em nenhum curso.</p>
+    </div>
   } @else {
-    <table mat-table [dataSource]="courses()">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Nome</th>
-        <td mat-cell *matCellDef="let course">{{ course.name }}</td>
-      </ng-container>
+    <mat-card>
+      <table mat-table [dataSource]="courses()">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let course">{{ course.name }}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="center">
-        <th mat-header-cell *matHeaderCellDef>Centro</th>
-        <td mat-cell *matCellDef="let course">{{ course.center.code }}</td>
-      </ng-container>
+        <ng-container matColumnDef="center">
+          <th mat-header-cell *matHeaderCellDef>Centro</th>
+          <td mat-cell *matCellDef="let course">{{ course.center.code }}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="totalSemesters">
-        <th mat-header-cell *matHeaderCellDef>Semestres</th>
-        <td mat-cell *matCellDef="let course">{{ course.totalSemesters }}</td>
-      </ng-container>
+        <ng-container matColumnDef="totalSemesters">
+          <th mat-header-cell *matHeaderCellDef>Semestres</th>
+          <td mat-cell *matCellDef="let course">{{ course.totalSemesters }}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="students">
-        <th mat-header-cell *matHeaderCellDef>Matriculados</th>
-        <td mat-cell *matCellDef="let course">{{ course.studentCount }}</td>
-      </ng-container>
+        <ng-container matColumnDef="students">
+          <th mat-header-cell *matHeaderCellDef>Matriculados</th>
+          <td mat-cell *matCellDef="let course">{{ course.studentCount }}</td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card>
   }
 }

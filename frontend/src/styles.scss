@@ -77,3 +77,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .error-text {
   color: var(--mat-sys-error);
 }
+
+/* Tabelas de dados ocupam a largura do card que as contém. */
+table[mat-table] {
+  width: 100%;
+}
+
+/* Título de dialog com um ícone à esquerda. */
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

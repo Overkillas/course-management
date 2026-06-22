@@ -4,6 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Student } from '../student.models';
@@ -24,6 +25,7 @@ import { StudentService } from '../student.service';
     MatInputModule,
     MatButtonModule,
     MatProgressBarModule,
+    MatIconModule,
   ],
   templateUrl: './student-form-dialog.html',
   styleUrl: './student-form-dialog.scss',

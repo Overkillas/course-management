@@ -6,6 +6,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Student } from '../../students/student.models';
@@ -33,6 +34,7 @@ export interface EnrollStudentDialogData {
     MatAutocompleteModule,
     MatButtonModule,
     MatProgressBarModule,
+    MatIconModule,
   ],
   templateUrl: './enroll-student-dialog.html',
   styleUrl: './enroll-student-dialog.scss',

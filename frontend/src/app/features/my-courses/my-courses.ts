@@ -1,4 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { Course } from '../courses/course.models';
@@ -9,7 +11,7 @@ import { EnrollmentService } from '../enrollments/enrollment.service';
  */
 @Component({
   selector: 'app-my-courses',
-  imports: [MatTableModule, MatProgressBarModule],
+  imports: [MatTableModule, MatProgressBarModule, MatCardModule, MatIconModule],
   templateUrl: './my-courses.html',
   styleUrl: './my-courses.scss',
 })

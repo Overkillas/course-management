@@ -1,4 +1,7 @@
-<h2 mat-dialog-title>Novo curso</h2>
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>menu_book</mat-icon>
+  Novo curso
+</h2>
 
 @if (submitting()) {
   <mat-progress-bar mode="indeterminate" />
@@ -6,7 +9,7 @@
 
 <mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="submit()" class="course-form">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Nome</mat-label>
       <input matInput formControlName="name" />
       @if (form.controls.name.hasError('required')) {
@@ -18,7 +21,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Centro</mat-label>
       <mat-select formControlName="centerId">
         @for (center of centers(); track center.id) {
@@ -30,7 +33,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="fill">
       <mat-label>Semestres</mat-label>
       <input matInput type="number" formControlName="totalSemesters" min="1" />
       @if (form.controls.totalSemesters.hasError('required')) {
