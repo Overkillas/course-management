@@ -18,8 +18,9 @@ dois perfis de uso, espelhando os papéis do backend:
 
 - **Admin:** gerencia alunos, cursos e matrículas, e lista os alunos matriculados
   por curso.
-- **Aluno:** consulta o próprio perfil e as próprias matrículas, e troca a senha no
-  primeiro acesso.
+- **Aluno:** consulta as próprias matrículas e troca a senha no primeiro acesso. Os
+  dados básicos do próprio usuário (nome, e-mail, papel) ficam no menu de conta, na
+  toolbar, em vez de uma tela de perfil dedicada.
 
 A API roda em `http://localhost:8080` (Swagger em `/q/docs`). O contrato consumido
 está resumido no `README.md` da raiz.
@@ -53,11 +54,18 @@ frontend/
     └── app/
         ├── core/          # código transversal (o "shared" do backend)
         │   ├── auth/      # sessão, leitura do token, guards
-        │   └── http/      # interceptor e tratamento de erro
-        ├── features/      # uma pasta por tela (login, students, courses, ...)
+        │   ├── http/      # interceptor de token
+        │   └── me/        # self-service do usuário (perfil, troca de senha)
+        ├── layout/        # o shell autenticado (toolbar, navegação, menu de conta)
+        ├── shared/        # UI reutilizável (ex.: dialog de confirmação)
+        ├── features/      # uma pasta por tela, com seus models e services
         ├── app.routes.ts  # tabela de rotas
         └── app.config.ts  # configuração da aplicação
 ```
+
+O service de dados de uma tela fica co-locado na própria feature; só o que é
+genuinamente transversal (sessão, interceptor, self-service do usuário) vive em
+`core`, e a UI reutilizável por mais de uma tela vive em `shared`.
 
 ---
 
@@ -70,11 +78,13 @@ frontend/
 | `/students` | admin | Lista, cadastro e exclusão de alunos |
 | `/courses` | admin | Lista, cadastro e exclusão de cursos |
 | `/courses/:id/students` | admin | Matriculados no curso e matrícula de aluno |
-| `/me` | autenticado | Perfil do aluno |
-| `/me/courses` | autenticado | Cursos do aluno |
+| `/me/courses` | aluno | Próprias matrículas do aluno |
 
-A raiz redireciona conforme o papel: admin para `/students`, aluno para
-`/me/courses`. Não há tela inicial separada porque o desafio não pede uma.
+As rotas autenticadas vivem dentro de um shell (toolbar e navegação), protegido pelos
+guards (sessão válida, papel certo e a trava de primeiro acesso). A raiz redireciona
+conforme o papel: admin para `/students`, aluno para `/me/courses`. Os dados do
+próprio usuário (nome, e-mail, papel) não são uma tela: ficam no menu de conta da
+toolbar.
 
 ---
 
@@ -130,6 +140,26 @@ recarregamento, um atrito grande.
 **Leitura do token sem biblioteca.** Ler os dados do token é uma função curta, então
 não adicionei uma dependência só para isso. A leitura é só para a interface e não
 verifica a assinatura, porque essa verificação é responsabilidade do backend.
+
+**Dados do usuário no menu de conta, em vez de uma tela de perfil.** O perfil do
+aluno é só nome, e-mail e papel, então uma tela dedicada ficava vazia. Movi esses
+dados para um menu na toolbar (o botão de conta), que é onde o usuário naturalmente
+procura. Isso eliminou uma rota e um componente.
+
+**Campos de formulário com aparência `fill`, em vez de `outline`.** A aparência
+`outline` do Material renderizava o label cortado pela borda do campo. Troquei por
+`fill`, em que o label sobe sobre um fundo preenchido, sem borda para cruzá-lo. É
+robusto e fica limpo.
+
+**Animações do Material habilitadas.** Liguei as animações (`@angular/animations` mais
+o provider) para o ripple nos botões e as transições de menu e dialog.
+
+**Trade-off.** Uma dependência a mais, mas o ganho de acabamento tira a sensação de
+protótipo.
+
+**Dialog de confirmação reutilizável.** Toda ação destrutiva (excluir aluno ou curso)
+passa por um único `ConfirmDialog` em `shared`, com título, mensagem e ícone
+parametrizados, em vez de repetir um dialog por tela.
 
 ---
 
