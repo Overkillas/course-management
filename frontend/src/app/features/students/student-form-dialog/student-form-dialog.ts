@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -43,6 +44,17 @@ export class StudentFormDialog {
     email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
     password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(72)]],
   });
+
+  // Espelha o valor da senha em signal para o check de tamanho reagir ao digitar. A
+  // senha inicial valida só tamanho (8 a 72), não a regra de senha forte.
+  private readonly passwordValue = signal('');
+  readonly hasMinLength = computed(() => this.passwordValue().length >= 8);
+
+  constructor() {
+    this.form.controls.password.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((value) => this.passwordValue.set(value));
+  }
 
   submit(): void {
     if (this.form.invalid) {

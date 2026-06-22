@@ -1,4 +1,16 @@
 <mat-toolbar color="primary" class="shell-toolbar">
+  <button mat-icon-button class="shell-nav-toggle" [matMenuTriggerFor]="navMenu" aria-label="Menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #navMenu="matMenu">
+    @if (isAdmin) {
+      <a mat-menu-item routerLink="/students"><mat-icon>group</mat-icon><span>Alunos</span></a>
+      <a mat-menu-item routerLink="/courses"><mat-icon>menu_book</mat-icon><span>Cursos</span></a>
+    } @else {
+      <a mat-menu-item routerLink="/me/courses"><mat-icon>menu_book</mat-icon><span>Meus cursos</span></a>
+    }
+  </mat-menu>
+
   <mat-icon class="shell-logo">school</mat-icon>
   <span class="shell-title">Course Management</span>
 

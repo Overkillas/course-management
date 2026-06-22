@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  min-width: 320px;
+  width: 320px;
+  max-width: 100%;
 }
 
 .student-form-error {

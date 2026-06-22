@@ -89,3 +89,53 @@ table[mat-table] {
   align-items: center;
   gap: 0.5rem;
 }
+
+/* Responsivo: em telas estreitas a tabela rola na horizontal dentro do card, em vez
+   de estourar a largura da página. */
+mat-card:has(table[mat-table]) {
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-wrap: wrap;
+  }
+}
+
+/* Checklist de requisitos (senha): cada item fica verde quando cumprido. */
+.password-rules {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.password-rules li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.85rem;
+}
+
+.password-rules li mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.password-rules li.met {
+  color: #2e7d32;
+}
+
+/* Conteúdo do menu "ver mais" (detalhes de curso no mobile). */
+.row-details {
+  padding: 0.5rem 1rem;
+}
+
+.row-details p {
+  margin: 0.25rem 0;
+  white-space: nowrap;
+}

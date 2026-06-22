@@ -37,10 +37,17 @@
       <mat-hint>Provisória, usada apenas no primeiro acesso.</mat-hint>
       @if (form.controls.password.hasError('required')) {
         <mat-error>Informe a senha inicial.</mat-error>
-      } @else if (form.controls.password.hasError('minlength') || form.controls.password.hasError('maxlength')) {
-        <mat-error>Entre 8 e 72 caracteres.</mat-error>
+      } @else if (form.controls.password.hasError('maxlength')) {
+        <mat-error>No máximo 72 caracteres.</mat-error>
       }
     </mat-form-field>
+
+    <ul class="password-rules">
+      <li [class.met]="hasMinLength()">
+        <mat-icon>{{ hasMinLength() ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+        Ao menos 8 caracteres
+      </li>
+    </ul>
 
     @if (errorMessage()) {
       <p class="student-form-error">{{ errorMessage() }}</p>

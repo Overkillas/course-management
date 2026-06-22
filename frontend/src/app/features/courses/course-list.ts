@@ -1,12 +1,16 @@
-import { Component, inject, signal } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
+import { map } from 'rxjs';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { Course } from './course.models';
 import { CourseFormDialog } from './course-form-dialog/course-form-dialog';
@@ -18,7 +22,15 @@ import { CourseService } from './course.service';
  */
 @Component({
   selector: 'app-course-list',
-  imports: [RouterLink, MatTableModule, MatProgressBarModule, MatButtonModule, MatIconModule, MatCardModule],
+  imports: [
+    RouterLink,
+    MatTableModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatMenuModule,
+  ],
   templateUrl: './course-list.html',
   styleUrl: './course-list.scss',
 })
@@ -26,11 +38,23 @@ export class CourseList {
   private readonly service = inject(CourseService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly breakpoints = inject(BreakpointObserver);
 
   readonly courses = signal<Course[]>([]);
   readonly loading = signal(true);
   readonly error = signal(false);
-  readonly displayedColumns = ['name', 'center', 'totalSemesters', 'students', 'actions'];
+
+  // Em telas estreitas, a tabela mostra menos colunas (nome e centro) e um botão
+  // "ver mais"; os detalhes (semestres, matriculados) vão para um menu.
+  readonly isHandset = toSignal(
+    this.breakpoints.observe('(max-width: 768px)').pipe(map((state) => state.matches)),
+    { initialValue: false },
+  );
+  readonly displayedColumns = computed(() =>
+    this.isHandset()
+      ? ['name', 'center', 'actions']
+      : ['name', 'center', 'totalSemesters', 'students', 'actions'],
+  );
 
   constructor() {
     this.load();

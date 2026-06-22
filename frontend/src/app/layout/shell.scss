@@ -60,3 +60,28 @@
 .shell-link-active {
   font-weight: 700;
 }
+
+/* Hambúrguer só aparece em telas estreitas (no desktop a navegação é inline). */
+.shell-nav-toggle {
+  display: none;
+  margin-right: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .shell-nav,
+  .shell-logo {
+    display: none;
+  }
+
+  .shell-nav-toggle {
+    display: inline-flex;
+  }
+
+  .shell-user-button-name {
+    display: none;
+  }
+
+  .shell-content {
+    padding: 1rem;
+  }
+}
