@@ -20,7 +20,7 @@ import org.hibernate.exception.ConstraintViolationException;
 /**
  * Regra de negócio em torno do usuário (um service por agregado). Reúne a gestão de alunos
  * pelo admin (cadastrar, listar e excluir, sempre no subconjunto ALUNO) e o self-service do
- * próprio usuário autenticado (consultar o perfil; a troca de senha entra adiante na Etapa 3).
+ * próprio usuário autenticado (consultar o perfil e trocar a própria senha).
  * Quem pode chamar cada operação é decidido nos resources, não aqui (StudentResource é
  * admin-only, MeResource é qualquer autenticado).
  */

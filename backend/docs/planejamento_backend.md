@@ -92,6 +92,12 @@ A exclusão de aluno e de curso remove em cascata as matrículas associadas,
 evitando vínculos órfãos. A modelagem completa, com todas as decisões de
 integridade referencial, está em `db_diagram.md`.
 
+**Listagens sem paginação, por ora.** As listagens (`/students`, `/courses` e os
+alunos por curso) retornam a coleção inteira. No volume deste desafio isso é
+irrelevante; em escala, paginação (e filtros) passa a ser necessária. Fica
+registrado como evolução aditiva: acrescentar paginação não reescreve o que
+existe, seguindo o princípio de começar simples e evoluir por acréscimo (§1).
+
 ---
 
 ## 4. Ambiente: desenvolvimento e entrega são fases diferentes

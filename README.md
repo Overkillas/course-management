@@ -184,6 +184,9 @@ validações, a lista de campos inválidos).
   `must_change_password`. Enquanto não trocar a senha (`POST /me/password`: mínimo 8 caracteres,
   com letra, dígito e caractere especial), fica bloqueado nos demais endpoints. Depois de trocar,
   refaz o login e passa a operar normalmente.
+- **Chaves.** A assinatura usa um par RSA de **demonstração** versionado em
+  `backend/src/main/resources`, para o sistema subir com um único comando. Em produção, gere ou
+  injete um par próprio e **não versione a chave privada**.
 
 As escolhas (inclusive por que migrei de HS256 para RS256) estão em
 [planejamento_backend.md](backend/docs/planejamento_backend.md) §5.
@@ -197,7 +200,7 @@ cd backend
 ./mvnw test
 ```
 
-São **33 testes de integração** (JUnit 5 + RestAssured sobre `@QuarkusTest`, com um MySQL efêmero
+São **36 testes de integração** (JUnit 5 + RestAssured sobre `@QuarkusTest`, com um MySQL efêmero
 via Dev Services), priorizando valor sobre quantidade: unicidade de matrícula, exclusão em
 cascata, autorização por papel, troca de senha no primeiro acesso e validações de entrada. A
 estratégia está em [planejamento_backend.md](backend/docs/planejamento_backend.md) §8.

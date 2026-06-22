@@ -21,8 +21,8 @@ import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 /**
- * Exposição HTTP do aluno: cadastrar, listar e excluir. Operações de gestão do administrador
- * (o controle de acesso por papel entra na Etapa 3).
+ * Exposição HTTP do aluno: cadastrar, listar e excluir. Operações de gestão restritas ao
+ * administrador (@RolesAllowed na classe).
  */
 @Path("/students")
 @Produces(MediaType.APPLICATION_JSON)
