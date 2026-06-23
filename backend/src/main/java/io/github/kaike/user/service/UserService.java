@@ -7,6 +7,7 @@ import io.github.kaike.user.domain.UserRole;
 import io.github.kaike.user.dtos.ChangePasswordRequest;
 import io.github.kaike.user.dtos.CreateStudentRequest;
 import io.github.kaike.user.dtos.StudentResponse;
+import io.github.kaike.user.dtos.UpdateStudentNameRequest;
 import io.github.kaike.user.dtos.UserResponse;
 import io.github.kaike.user.mapper.UserMapper;
 import io.github.kaike.user.repository.UserRepository;
@@ -71,6 +72,20 @@ public class UserService {
             }
             throw e;
         }
+        return mapper.toStudentResponse(student);
+    }
+
+    /**
+     * Atualiza o nome de um aluno (só o nome é editável). Mesma checagem de papel do delete: o
+     * endpoint /students não atualiza um admin por id. A entidade é gerenciada, então o UPDATE
+     * sai no commit (dirty checking), sem save explícito.
+     */
+    @Transactional
+    public StudentResponse updateStudentName(Integer id, UpdateStudentNameRequest request) {
+        User student = userRepository.findByIdOptional(id)
+            .filter(user -> user.getRole() == UserRole.ALUNO)
+            .orElseThrow(() -> new ResourceNotFoundException("Aluno " + id + " não encontrado"));
+        student.setName(request.name());
         return mapper.toStudentResponse(student);
     }
 

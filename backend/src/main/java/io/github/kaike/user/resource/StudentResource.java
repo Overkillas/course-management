@@ -2,6 +2,7 @@ package io.github.kaike.user.resource;
 
 import io.github.kaike.user.dtos.CreateStudentRequest;
 import io.github.kaike.user.dtos.StudentResponse;
+import io.github.kaike.user.dtos.UpdateStudentNameRequest;
 import io.github.kaike.user.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -49,6 +51,16 @@ public class StudentResource {
     public Response create(@Valid CreateStudentRequest request) {
         StudentResponse created = service.createStudent(request);
         return Response.status(Response.Status.CREATED).entity(created).build();
+    }
+
+    @PATCH
+    @Path("/{id}")
+    @Operation(summary = "Atualiza o nome de um aluno")
+    public StudentResponse updateName(
+        @PathParam("id") @Parameter(example = "1") Integer id,
+        @Valid UpdateStudentNameRequest request
+    ) {
+        return service.updateStudentName(id, request);
     }
 
     @DELETE
