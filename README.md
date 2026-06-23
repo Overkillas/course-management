@@ -160,6 +160,7 @@ Visão geral dos recursos:
 |-------------|----------------------------|--------------|---------------------------------------------------|
 | `POST`      | `/auth/login`              | público      | Autentica e retorna o token JWT                   |
 | `GET POST`  | `/students`                | admin        | Lista / cadastra alunos                           |
+| `PATCH`     | `/students/{id}`           | admin        | Atualiza o nome de um aluno                       |
 | `DELETE`    | `/students/{id}`           | admin        | Exclui um aluno                                   |
 | `GET POST`  | `/courses`                 | admin        | Lista / cadastra cursos                           |
 | `DELETE`    | `/courses/{id}`            | admin        | Exclui um curso                                   |
@@ -200,7 +201,7 @@ cd backend
 ./mvnw test
 ```
 
-São **36 testes de integração** (JUnit 5 + RestAssured sobre `@QuarkusTest`, com um MySQL efêmero
+São **39 testes de integração** (JUnit 5 + RestAssured sobre `@QuarkusTest`, com um MySQL efêmero
 via Dev Services), priorizando valor sobre quantidade: unicidade de matrícula, exclusão em
 cascata, autorização por papel, troca de senha no primeiro acesso e validações de entrada. A
 estratégia está em [planejamento_backend.md](backend/docs/planejamento_backend.md) §8.
