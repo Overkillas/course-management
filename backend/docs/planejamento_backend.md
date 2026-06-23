@@ -163,7 +163,7 @@ pontos de entrada, com rigor diferente em cada, por intenção:
   exigir maiúscula, dígito e caractere especial só geraria fricção para o admin,
   sem ganho real.
 - *Senha escolhida pelo aluno (na troca):* aqui vale a política completa de
-  complexidade (tamanho mínimo mais maiúscula, minúscula, dígito e caractere
+  complexidade (ao menos 8 caracteres, com uma letra, um dígito e um caractere
   especial), expressa por uma constraint de validação dedicada. É a senha que de
   fato persiste e passa a ser usada.
 - *Login:* nenhuma validação de política. O login pergunta "esta é a senha

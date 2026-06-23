@@ -64,8 +64,7 @@ export class Login {
     });
   }
 
-  // Destino após o login, conforme o papel e o primeiro acesso. Estas rotas vão
-  // sendo construídas nas próximas etapas; por ora caem no catch-all "em construção".
+  // Destino após o login, conforme o papel e o primeiro acesso.
   private landingRoute(): string {
     if (this.auth.mustChangePassword()) {
       return '/change-password';

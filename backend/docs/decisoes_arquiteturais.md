@@ -74,22 +74,32 @@ Na camada de persistência usei o **padrão Repository**: cada domínio tem uma
 classe de repositório dedicada, e a entidade permanece focada em representar o
 dado, sem carregar os métodos de persistência.
 
-O ORM oferece dois estilos: o *Active Record*, em que a própria entidade carrega
-os métodos de acesso a dados, e o *Repository*, em que essa responsabilidade vive
-em uma classe separada. Escolhi o Repository de propósito, por dois motivos:
+O Panache oferece os dois estilos como cidadãos de primeira classe: o *Active
+Record*, em que a própria entidade carrega os métodos de acesso (o mais comum nos
+exemplos do Quarkus), e o *Repository*, em que esse acesso vive numa classe à parte.
+Escolhi o Repository de propósito:
 
-- **Separação de responsabilidades.** A entidade representa o conceito de negócio;
-  o repositório representa o acesso a esse conceito no armazenamento. Mantê-los
-  separados respeita a divisão de camadas descrita acima.
-- **Testabilidade.** Com o acesso a dados isolado em uma classe própria, consigo
-  testar o service substituindo o repositório por uma implementação de teste, sem
-  depender do banco real. O Active Record, ao fundir entidade e persistência,
-  dificulta esse isolamento.
+- **Separação de responsabilidades e organização.** A entidade representa o
+  conceito de negócio; o repositório, o acesso a esse conceito no armazenamento.
+  Manter os dois separados deixa cada peça com uma responsabilidade só e, na minha
+  leitura, o código mais organizado, ainda que ao custo de mais boilerplate (uma
+  classe a mais por domínio).
+- **Familiaridade.** Venho de ecossistemas onde o Repository é a norma, o que reduz
+  o atrito de raciocinar sobre a persistência enquanto consolido o Quarkus (coerente
+  com a nota sobre a stack em `planejamento_backend.md` §2).
 
-**Trade-off.** O Active Record é mais conciso e gera menos arquivos, sendo
-conveniente para casos muito simples. O custo é o acoplamento entre o modelo e a
-persistência. Como valorizo camadas claras e testes das regras de negócio, o
-padrão Repository me pareceu o mais coerente para este projeto.
+A separação também **abre caminho** para testar um service isoladamente, trocando o
+repositório por um dublê, sem subir o banco. Registro isso como benefício *latente*
+da arquitetura, e não como algo que a suíte atual já exercite: os testes deste
+projeto são de integração (`@QuarkusTest` + banco efêmero), uma escolha deliberada
+de verificar o comportamento ponta a ponta (ver §8). O Repository deixa essa porta
+aberta caso a relação custo/valor mude e testes de unidade de service passem a valer
+a pena.
+
+**Trade-off.** O Active Record é mais conciso e gera menos arquivos, conveniente
+para casos simples; o custo é o acoplamento entre modelo e persistência. Aceitei o
+boilerplate extra do Repository em troca de camadas mais claras e da organização que
+prefiro.
 
 ### 2.3. Estratégia de busca: `JOIN FETCH` para evitar N+1
 
