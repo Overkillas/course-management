@@ -43,6 +43,15 @@ describe('StudentService', () => {
     req.flush({ id: 1, ...request, mustChangePassword: true });
   });
 
+  it('edita o nome via PATCH /students/{id}', () => {
+    service.updateName(7, 'Maria Souza').subscribe();
+
+    const req = httpMock.expectOne(`${baseUrl}/7`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ name: 'Maria Souza' });
+    req.flush({ id: 7, name: 'Maria Souza', email: 'maria@x.com', mustChangePassword: false });
+  });
+
   it('exclui um aluno via DELETE /students/{id}', () => {
     service.delete(7).subscribe();
 

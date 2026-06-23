@@ -4,6 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -13,12 +14,13 @@ import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { Course } from './course.models';
+import { CourseEditDialog } from './course-edit-dialog/course-edit-dialog';
 import { CourseFormDialog } from './course-form-dialog/course-form-dialog';
 import { CourseService } from './course.service';
 
 /**
- * Listagem de cursos (admin), com cadastro (dialog) e exclusão (com confirmação).
- * Após uma escrita bem-sucedida, recarrega a lista do servidor.
+ * Listagem de cursos (admin), com cadastro, edição (só o nome) e exclusão. O cadastro
+ * e a exclusão recarregam a lista; a edição atualiza a linha com o corpo da resposta.
  */
 @Component({
   selector: 'app-course-list',
@@ -30,6 +32,7 @@ import { CourseService } from './course.service';
     MatIconModule,
     MatCardModule,
     MatMenuModule,
+    MatDividerModule,
   ],
   templateUrl: './course-list.html',
   styleUrl: './course-list.scss',
@@ -68,6 +71,18 @@ export class CourseList {
         if (created) {
           this.snackBar.open('Curso cadastrado.', 'Fechar', { duration: 4000 });
           this.load();
+        }
+      });
+  }
+
+  openEdit(course: Course): void {
+    this.dialog
+      .open(CourseEditDialog, { data: course })
+      .afterClosed()
+      .subscribe((updated?: Course) => {
+        if (updated) {
+          this.courses.update((list) => list.map((c) => (c.id === updated.id ? updated : c)));
+          this.snackBar.open('Curso atualizado.', 'Fechar', { duration: 4000 });
         }
       });
   }

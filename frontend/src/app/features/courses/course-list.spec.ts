@@ -72,6 +72,18 @@ describe('CourseList', () => {
     expect(snackMock.open).toHaveBeenCalled();
   });
 
+  it('atualiza a linha quando um curso é editado', () => {
+    serviceMock.list.and.returnValue(of([aCourse]));
+    const updated = { ...aCourse, name: 'Engenharia de Software' };
+    dialogMock.open.and.returnValue({ afterClosed: () => of(updated) });
+    const component = createComponent();
+
+    component.openEdit(aCourse);
+
+    expect(component.courses()).toEqual([updated]);
+    expect(snackMock.open).toHaveBeenCalled();
+  });
+
   it('exclui o curso após confirmação', () => {
     dialogMock.open.and.returnValue({ afterClosed: () => of(true) });
     const component = createComponent();

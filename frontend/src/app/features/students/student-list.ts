@@ -1,23 +1,35 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
+import { map } from 'rxjs';
 import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 import { Student } from './student.models';
+import { StudentEditDialog } from './student-edit-dialog/student-edit-dialog';
 import { StudentFormDialog } from './student-form-dialog/student-form-dialog';
 import { StudentService } from './student.service';
 
 /**
- * Listagem de alunos (admin), com cadastro e exclusão (com confirmação).
- * Após uma escrita bem-sucedida, recarrega a lista do servidor.
+ * Listagem de alunos (admin), com cadastro, edição (só o nome) e exclusão. O cadastro
+ * e a exclusão recarregam a lista; a edição atualiza a linha com o corpo da resposta.
  */
 @Component({
   selector: 'app-student-list',
-  imports: [MatTableModule, MatProgressBarModule, MatButtonModule, MatIconModule, MatCardModule],
+  imports: [
+    MatTableModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatMenuModule,
+  ],
   templateUrl: './student-list.html',
   styleUrl: './student-list.scss',
 })
@@ -25,11 +37,18 @@ export class StudentList {
   private readonly service = inject(StudentService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly breakpoints = inject(BreakpointObserver);
 
   readonly students = signal<Student[]>([]);
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly displayedColumns = ['name', 'email', 'actions'];
+
+  // Em telas estreitas as ações da linha colapsam num menu, para não estourar a largura.
+  readonly isHandset = toSignal(
+    this.breakpoints.observe('(max-width: 768px)').pipe(map((state) => state.matches)),
+    { initialValue: false },
+  );
 
   constructor() {
     this.load();
@@ -43,6 +62,18 @@ export class StudentList {
         if (created) {
           this.snackBar.open('Aluno cadastrado.', 'Fechar', { duration: 4000 });
           this.load();
+        }
+      });
+  }
+
+  openEdit(student: Student): void {
+    this.dialog
+      .open(StudentEditDialog, { data: student })
+      .afterClosed()
+      .subscribe((updated?: Student) => {
+        if (updated) {
+          this.students.update((list) => list.map((s) => (s.id === updated.id ? updated : s)));
+          this.snackBar.open('Aluno atualizado.', 'Fechar', { duration: 4000 });
         }
       });
   }

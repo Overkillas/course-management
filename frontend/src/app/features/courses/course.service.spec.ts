@@ -40,6 +40,21 @@ describe('CourseService', () => {
     req.flush({ id: 1, name: request.name, totalSemesters: 8, center: { id: 1, code: 'CCT' } });
   });
 
+  it('edita o nome via PATCH /courses/{id}', () => {
+    service.updateName(5, 'Engenharia de Software').subscribe();
+
+    const req = httpMock.expectOne(`${baseUrl}/5`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ name: 'Engenharia de Software' });
+    req.flush({
+      id: 5,
+      name: 'Engenharia de Software',
+      totalSemesters: 8,
+      center: { id: 1, code: 'CCT' },
+      studentCount: 3,
+    });
+  });
+
   it('exclui um curso via DELETE /courses/{id}', () => {
     service.delete(5).subscribe();
 

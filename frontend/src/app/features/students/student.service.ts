@@ -20,6 +20,12 @@ export class StudentService {
     return this.http.post<Student>(this.baseUrl, request);
   }
 
+  // Edita só o nome (PATCH). Devolve o aluno atualizado, que serve para atualizar a
+  // linha da tabela sem refazer a listagem.
+  updateName(id: number, name: string): Observable<Student> {
+    return this.http.patch<Student>(`${this.baseUrl}/${id}`, { name });
+  }
+
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }

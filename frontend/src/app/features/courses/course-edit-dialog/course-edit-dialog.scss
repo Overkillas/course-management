@@ -1,0 +1,12 @@
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 320px;
+  max-width: 100%;
+}
+
+.edit-error {
+  color: var(--mat-sys-error);
+  margin: 0;
+}

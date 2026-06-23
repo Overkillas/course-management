@@ -64,6 +64,18 @@ describe('StudentList', () => {
     expect(snackMock.open).toHaveBeenCalled();
   });
 
+  it('atualiza a linha quando um aluno é editado', () => {
+    serviceMock.list.and.returnValue(of([aStudent]));
+    const updated = { ...aStudent, name: 'Maria Souza' };
+    dialogMock.open.and.returnValue({ afterClosed: () => of(updated) });
+    const component = createComponent();
+
+    component.openEdit(aStudent);
+
+    expect(component.students()).toEqual([updated]);
+    expect(snackMock.open).toHaveBeenCalled();
+  });
+
   it('exclui o aluno após confirmação', () => {
     dialogMock.open.and.returnValue({ afterClosed: () => of(true) });
     const component = createComponent();

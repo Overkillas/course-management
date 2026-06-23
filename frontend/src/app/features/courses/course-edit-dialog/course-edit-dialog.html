@@ -1,0 +1,35 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>edit</mat-icon>
+  Editar curso
+</h2>
+
+@if (submitting()) {
+  <mat-progress-bar mode="indeterminate" />
+}
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="edit-form">
+    <mat-form-field appearance="fill">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Informe o nome.</mat-error>
+      } @else if (form.controls.name.hasError('minlength')) {
+        <mat-error>Mínimo de 3 caracteres.</mat-error>
+      } @else if (form.controls.name.hasError('maxlength')) {
+        <mat-error>No máximo 100 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="edit-error">{{ errorMessage() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close [disabled]="submitting()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="submitting()">
+    Salvar
+  </button>
+</mat-dialog-actions>

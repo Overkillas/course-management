@@ -49,24 +49,28 @@
             @if (isHandset()) {
               <button
                 mat-icon-button
-                [matMenuTriggerFor]="detailsMenu"
+                [matMenuTriggerFor]="rowMenu"
                 [matMenuTriggerData]="{ course: course }"
-                aria-label="Ver detalhes"
+                aria-label="Ações"
               >
-                <mat-icon>info</mat-icon>
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            } @else {
+              <a
+                mat-icon-button
+                [routerLink]="['/courses', course.id, 'students']"
+                [state]="{ courseName: course.name }"
+                aria-label="Ver matriculados"
+              >
+                <mat-icon>group</mat-icon>
+              </a>
+              <button mat-icon-button (click)="openEdit(course)" aria-label="Editar curso">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="confirmDelete(course)" aria-label="Excluir curso">
+                <mat-icon>delete</mat-icon>
               </button>
             }
-            <a
-              mat-icon-button
-              [routerLink]="['/courses', course.id, 'students']"
-              [state]="{ courseName: course.name }"
-              aria-label="Ver matriculados"
-            >
-              <mat-icon>group</mat-icon>
-            </a>
-            <button mat-icon-button (click)="confirmDelete(course)" aria-label="Excluir curso">
-              <mat-icon>delete</mat-icon>
-            </button>
           </td>
         </ng-container>
 
@@ -75,12 +79,29 @@
       </table>
     </mat-card>
 
-    <mat-menu #detailsMenu="matMenu">
+    <mat-menu #rowMenu="matMenu">
       <ng-template matMenuContent let-course="course">
         <div class="row-details">
           <p><strong>Semestres:</strong> {{ course.totalSemesters }}</p>
           <p><strong>Matriculados:</strong> {{ course.studentCount }}</p>
         </div>
+        <mat-divider />
+        <a
+          mat-menu-item
+          [routerLink]="['/courses', course.id, 'students']"
+          [state]="{ courseName: course.name }"
+        >
+          <mat-icon>group</mat-icon>
+          <span>Ver matriculados</span>
+        </a>
+        <button mat-menu-item (click)="openEdit(course)">
+          <mat-icon>edit</mat-icon>
+          <span>Editar</span>
+        </button>
+        <button mat-menu-item (click)="confirmDelete(course)">
+          <mat-icon>delete</mat-icon>
+          <span>Excluir</span>
+        </button>
       </ng-template>
     </mat-menu>
   }
