@@ -116,4 +116,65 @@ class StudentResourceTest {
             .then()
                 .statusCode(404);
     }
+
+    @Test
+    void updateNameReturns200WithUpdatedName() {
+        int id =
+            given()
+                .contentType("application/json")
+                .body("""
+                    { "name": "Nome Antigo", "email": "teste.update@edu.unifor.br", "password": "senhaInicial123" }
+                    """)
+            .when().post("/students")
+            .then().statusCode(201).extract().path("id");
+
+        given()
+            .contentType("application/json")
+            .body("""
+                { "name": "Nome Novo" }
+                """)
+        .when().patch("/students/" + id)
+        .then()
+            .statusCode(200)
+            .body("id", is(id))
+            .body("name", is("Nome Novo"))
+            .body("email", is("teste.update@edu.unifor.br"));
+
+        given().when().delete("/students/" + id).then().statusCode(204);
+    }
+
+    @Test
+    void updateNonExistentStudentReturns404() {
+        given()
+            .contentType("application/json")
+            .body("""
+                { "name": "Qualquer" }
+                """)
+        .when().patch("/students/999999")
+        .then().statusCode(404);
+    }
+
+    @Test
+    void updateWithBlankNameReturns400() {
+        int id =
+            given()
+                .contentType("application/json")
+                .body("""
+                    { "name": "Aluno Valido", "email": "teste.update.branco@edu.unifor.br", "password": "senhaInicial123" }
+                    """)
+            .when().post("/students")
+            .then().statusCode(201).extract().path("id");
+
+        given()
+            .contentType("application/json")
+            .body("""
+                { "name": "" }
+                """)
+        .when().patch("/students/" + id)
+        .then()
+            .statusCode(400)
+            .body("violations.field", hasItem("name"));
+
+        given().when().delete("/students/" + id).then().statusCode(204);
+    }
 }
