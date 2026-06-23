@@ -163,6 +163,7 @@ Visão geral dos recursos:
 | `PATCH`     | `/students/{id}`           | admin        | Atualiza o nome de um aluno                       |
 | `DELETE`    | `/students/{id}`           | admin        | Exclui um aluno                                   |
 | `GET POST`  | `/courses`                 | admin        | Lista / cadastra cursos                           |
+| `PATCH`     | `/courses/{id}`            | admin        | Atualiza o nome de um curso                       |
 | `DELETE`    | `/courses/{id}`            | admin        | Exclui um curso                                   |
 | `GET`       | `/centers`                 | admin        | Lista os centros (dado de referência)             |
 | `GET POST`  | `/courses/{id}/students`   | admin        | Lista matriculados / matricula um aluno no curso  |
@@ -201,7 +202,7 @@ cd backend
 ./mvnw test
 ```
 
-São **39 testes de integração** (JUnit 5 + RestAssured sobre `@QuarkusTest`, com um MySQL efêmero
+São **42 testes de integração** (JUnit 5 + RestAssured sobre `@QuarkusTest`, com um MySQL efêmero
 via Dev Services), priorizando valor sobre quantidade: unicidade de matrícula, exclusão em
 cascata, autorização por papel, troca de senha no primeiro acesso e validações de entrada. A
 estratégia está em [planejamento_backend.md](backend/docs/planejamento_backend.md) §8.

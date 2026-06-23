@@ -368,6 +368,17 @@ o grafo de dependências acíclico. É uma evolução pontual da junção livre:
 back-reference nas pontas, mas o curso expõe uma contagem derivada dela. O `/me/courses`, que
 também devolve `CourseResponse`, traz a mesma contagem.
 
+**Edição de aluno e curso: só o nome, via `PATCH`.** O `PATCH /students/{id}` e o
+`PATCH /courses/{id}` alteram apenas o nome (e-mail, papel, centro e total de semestres não
+mudam por esses endpoints). Escolhi `PATCH`, e não `PUT`, justamente por ser atualização
+**parcial**: um `PUT` significaria substituição total do recurso, prometendo mais do que o
+endpoint faz. Ambos respondem `200` com a **representação canônica** do recurso atualizado, igual
+ao que o cadastro retorna, para que um `CourseResponse`/`StudentResponse` tenha sempre a mesma
+forma em qualquer endpoint. No curso, isso obriga a recalcular o `studentCount` (a contagem não
+muda em um rename, mas a resposta precisa ser completa e honesta); considerei responder `204` sem
+corpo, já que no fluxo comum o cliente vem da listagem e já tem esse dado, mas a uniformidade da
+representação e a simetria com o cadastro pesaram mais que o custo de um `COUNT` trivial.
+
 ---
 
 ## 9. Visão consolidada da estrutura
