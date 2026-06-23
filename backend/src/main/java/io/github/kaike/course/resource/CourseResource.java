@@ -2,6 +2,7 @@ package io.github.kaike.course.resource;
 
 import io.github.kaike.course.dtos.CourseResponse;
 import io.github.kaike.course.dtos.CreateCourseRequest;
+import io.github.kaike.course.dtos.UpdateCourseNameRequest;
 import io.github.kaike.course.service.CourseService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -49,6 +51,16 @@ public class CourseResource {
     public Response create(@Valid CreateCourseRequest request) {
         CourseResponse created = service.create(request);
         return Response.status(Response.Status.CREATED).entity(created).build();
+    }
+
+    @PATCH
+    @Path("/{id}")
+    @Operation(summary = "Atualiza o nome de um curso")
+    public CourseResponse updateName(
+        @PathParam("id") @Parameter(example = "1") Integer id,
+        @Valid UpdateCourseNameRequest request
+    ) {
+        return service.updateName(id, request);
     }
 
     @DELETE

@@ -5,6 +5,7 @@ import io.github.kaike.center.repository.CenterRepository;
 import io.github.kaike.course.domain.Course;
 import io.github.kaike.course.dtos.CourseResponse;
 import io.github.kaike.course.dtos.CreateCourseRequest;
+import io.github.kaike.course.dtos.UpdateCourseNameRequest;
 import io.github.kaike.course.mapper.CourseMapper;
 import io.github.kaike.course.repository.CourseRepository;
 import io.github.kaike.shared.exceptions.InvalidRequestException;
@@ -52,6 +53,24 @@ public class CourseService {
         Course course = mapper.toEntity(request, center);
         courseRepository.persist(course);
         return mapper.toResponse(course, 0);
+    }
+
+    /**
+     * Atualiza o nome de um curso (só o nome é editável). A entidade é gerenciada, então o UPDATE
+     * sai no commit (dirty checking).
+     *
+     * Retorna o CourseResponse completo, recalculando a contagem de alunos para a resposta ser a
+     * representação canônica do curso (igual ao create e à listagem). Considerei devolver 204 sem
+     * corpo: o studentCount não muda no rename e o cliente, vindo da listagem, já o tem, então
+     * recontar é redundante no fluxo comum. Optei pela primeira (200 com o recurso) pela uniformidade da
+     * representação e simetria com o create; o custo é um COUNT trivial.
+     */
+    @Transactional
+    public CourseResponse updateName(Integer id, UpdateCourseNameRequest request) {
+        Course course = courseRepository.findByIdOptional(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Curso " + id + " não encontrado"));
+        course.setName(request.name());
+        return mapper.toResponse(course, courseRepository.countStudents(id));
     }
 
     @Transactional

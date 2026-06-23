@@ -28,4 +28,15 @@ public class CourseRepository implements PanacheRepositoryBase<Course, Integer> 
             .map(row -> new CourseWithStudentCount((Course) row[0], (Long) row[1]))
             .toList();
     }
+
+    /**
+     * Quantidade de alunos matriculados num curso. Referencia Enrollment apenas pelo nome no
+     * JPQL (sem import Java do pacote enrollment), mantendo o grafo de dependências acíclico
+     * (ver decisões 8.2). Usado para montar o CourseResponse fora da listagem (ex.: no update).
+     */
+    public long countStudents(Integer courseId) {
+        return getEntityManager().createQuery(
+                "SELECT COUNT(e.id) FROM Enrollment e WHERE e.course.id = ?1", Long.class)
+            .setParameter(1, courseId).getSingleResult();
+    }
 }
